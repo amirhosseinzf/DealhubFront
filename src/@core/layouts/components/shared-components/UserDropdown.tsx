@@ -172,7 +172,7 @@ const UserDropdown = (props: Props) => {
           sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
         >
           <Icon icon='mdi:logout-variant' />
-          خروج
+          Exit
         </MenuItem>
       </Menu>
     </Fragment>

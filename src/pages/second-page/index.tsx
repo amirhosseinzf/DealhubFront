@@ -4,10 +4,11 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import DatePicker from 'react-multi-date-picker'
-import persian from 'react-date-object/calendars/persian'
-import persian_fa from 'react-date-object/locales/persian_fa'
-import { TextField } from '@mui/material'
+
+// import DatePicker from 'react-multi-date-picker'
+// import persian from 'react-date-object/calendars/persian'
+// import persian_fa from 'react-date-object/locales/persian_fa'
+// import { TextField } from '@mui/material'
 
 const SecondPage = () => {
   return (
@@ -16,7 +17,7 @@ const SecondPage = () => {
         <Card>
           <CardHeader title='Create Awesome 🙌'></CardHeader>
           <CardContent>
-            <DatePicker
+            {/* <DatePicker
               render={(value: string, openCalendar: any) => (
                 <TextField
                   size='small'
@@ -27,7 +28,7 @@ const SecondPage = () => {
               )}
               calendar={persian}
               locale={persian_fa}
-            />
+            /> */}
             <Typography sx={{ mb: 2 }}>This is your second page.</Typography>
             <Typography>
               Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin. Carrot cake dragée chupa chups jujubes.

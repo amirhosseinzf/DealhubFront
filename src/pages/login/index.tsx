@@ -256,8 +256,8 @@ const LoginPage = () => {
               </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>{`به ${themeConfig.templateName} خوش آمدید! 👋🏻`}</TypographyStyled>
-              <Typography variant='body2'>برای ورود به سامانه ایمیل و کلمه عبور خود را وارد کنید </Typography>
+              <TypographyStyled variant='h5'>{`Wellcome to  ${themeConfig.templateName}  ! 👋🏻`}</TypographyStyled>
+              <Typography variant='body2'>For login Please Enter email and password</Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
@@ -276,7 +276,7 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
                       autoFocus
-                      label='ایمیل'
+                      label='email'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
@@ -289,7 +289,7 @@ const LoginPage = () => {
               </FormControl>
               <FormControl fullWidth>
                 <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                  کلمه عبور
+                  password
                 </InputLabel>
                 <Controller
                   name='password'
@@ -299,7 +299,7 @@ const LoginPage = () => {
                     <OutlinedInput
                       value={value}
                       onBlur={onBlur}
-                      label='کلمه عبور'
+                      label='password'
                       onChange={onChange}
                       id='auth-login-v2-password'
                       error={Boolean(errors.password)}
@@ -328,7 +328,7 @@ const LoginPage = () => {
                 sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
               >
                 <FormControlLabel
-                  label='مرا به خاطر بسپار'
+                  label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
                 <Typography
@@ -337,16 +337,16 @@ const LoginPage = () => {
                   href='/forgot-password'
                   sx={{ color: 'primary.main', textDecoration: 'none' }}
                 >
-                  بازیابی کلمه عبور
+                  Reset Password
                 </Typography>
               </Box>
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                ورود به سامانه
+                Login
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ mr: 2, color: 'text.secondary' }}>مایل به ساخت حساب جدید هستید؟</Typography>
+                <Typography sx={{ mr: 2, color: 'text.secondary' }}> Want to be one of us ?</Typography>
                 <Typography href='/register' component={Link} sx={{ color: 'primary.main', textDecoration: 'none' }}>
-                  ساخت حساب کاربری جدید
+                  Register
                 </Typography>
               </Box>
               <Divider

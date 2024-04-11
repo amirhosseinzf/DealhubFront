@@ -1,6 +1,5 @@
 const typography = {
   fontFamily: [
-    'vazir',
     'Inter',
     'sans-serif',
     '-apple-system',

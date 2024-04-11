@@ -4,17 +4,17 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   return [
     {
-      title: 'خانه',
+      title: 'Home',
       path: '/home',
       icon: 'mdi:home-outline'
     },
     {
-      title: 'صفحه تستی',
+      title: 'Test Page',
       path: '/second-page',
       icon: 'mdi:email-outline'
     },
     {
-      title: 'فاکتور',
+      title: 'Invoice',
       path: '/invoice/list',
       icon: 'mdi:paper-outline'
     },
@@ -22,7 +22,7 @@ const navigation = (): VerticalNavItemsType => {
       path: '/acl',
       action: 'read',
       subject: 'acl-page',
-      title: 'کنترل دسترسی',
+      title: 'access Manage',
       icon: 'mdi:shield-outline'
     }
   ]
