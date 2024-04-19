@@ -52,9 +52,10 @@ const AuthProvider = ({ children }: Props) => {
           .then(async response => {
             debugger
             setLoading(false)
-            setUser({ ...response.data, role: 'admin' })
+            setUser({ ...response.data })
           })
           .catch(() => {
+            debugger
             localStorage.removeItem('userData')
             localStorage.removeItem('refreshToken')
             localStorage.removeItem('accessToken')
@@ -85,12 +86,38 @@ const AuthProvider = ({ children }: Props) => {
           : null
         const returnUrl = router.query.returnUrl
 
-        setUser({ ...response.data.accountInfo, role: 'admin' })
+        setUser({ ...response.data.accountInfo })
         params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.accountInfo)) : null
 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
 
         router.replace(redirectURL as string)
+      })
+
+      .catch(err => {
+        debugger
+        if (errorCallback) errorCallback(err)
+      })
+  }
+  const handleRegister = (params: LoginParams, errorCallback?: ErrCallbackType) => {
+    debugger
+
+    axios
+      .post(authConfig.registerEndpoint, params)
+      .then(async response => {
+        debugger
+
+        // params.rememberMe
+        //   ? window.localStorage.setItem(authConfig.storageTokenKeyName, 'asdfadfafafasdfsadfasfasdfasfasdf') //response.data.accessToken
+        //   : null
+        // const returnUrl = router.query.returnUrl
+
+        // setUser({ ...response.data.accountInfo })
+        // params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.accountInfo)) : null
+
+        // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
+        // router.replace(redirectURL as string)
       })
 
       .catch(err => {
@@ -120,6 +147,7 @@ const AuthProvider = ({ children }: Props) => {
     setUser,
     setLoading,
     login: handleLogin,
+    register: handleRegister,
     logout: handleLogout
   }
 

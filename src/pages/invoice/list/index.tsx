@@ -26,10 +26,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
 import format from 'date-fns/format'
-import DatePicker, { registerLocale } from 'react-datepicker'
-import faIR from 'date-fns/locale/fa-IR'
-
-registerLocale('fa', faIR)
+import DatePicker from 'react-datepicker'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -345,7 +342,6 @@ const InvoiceList = () => {
                 <Grid item xs={12} sm={6}>
                   <DatePicker
                     isClearable
-                    locale='fa'
                     selectsRange
                     monthsShown={2}
                     endDate={endDateRange}
@@ -390,5 +386,8 @@ const InvoiceList = () => {
     </DatePickerWrapper>
   )
 }
-
+InvoiceList.acl = {
+  action: 'manage',
+  subject: 'UserManagment'
+}
 export default InvoiceList

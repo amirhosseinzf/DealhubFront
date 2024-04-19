@@ -42,5 +42,8 @@ export const getStaticProps: GetStaticProps = ({ params }: GetStaticPropsContext
     }
   }
 }
-
+InvoiceEdit.acl = {
+  action: 'manage',
+  subject: 'UserManagment'
+}
 export default InvoiceEdit

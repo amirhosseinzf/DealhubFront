@@ -4,9 +4,18 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   return [
     {
+      title: 'verify Email',
+      path: '/account/verify-email',
+      icon: 'mdi:lock-outline',
+      action: 'read',
+      subject: 'verify-email'
+    },
+    {
       title: 'Home',
       path: '/home',
       icon: 'mdi:home-outline'
+
+      // auth: false
     },
     {
       title: 'Test Page',
@@ -16,7 +25,9 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Invoice',
       path: '/invoice/list',
-      icon: 'mdi:paper-outline'
+      icon: 'mdi:paper-outline',
+      action: 'manage',
+      subject: 'UserManagment'
     },
     {
       path: '/acl',

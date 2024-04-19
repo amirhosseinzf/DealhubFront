@@ -136,7 +136,7 @@ const LoginPage = () => {
   const onSubmit = (data: FormData) => {
     debugger
     const { email, password } = data
-    auth.login({ username: email, password, rememberMe }, () => {
+    auth.login({ username: email, password, rememberMe, captchaResponse: 'string' }, () => {
       setError('email', {
         type: 'manual',
         message: 'ایمیل و یا کلمه عبور صحیح نمیباشد'
@@ -257,7 +257,7 @@ const LoginPage = () => {
             </Box>
             <Box sx={{ mb: 6 }}>
               <TypographyStyled variant='h5'>{`Wellcome to  ${themeConfig.templateName}  ! 👋🏻`}</TypographyStyled>
-              <Typography variant='body2'>For login Please Enter email and password</Typography>
+              <Typography variant='body2'>For login Please Enter email or username and password</Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
@@ -276,7 +276,7 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
                       autoFocus
-                      label='email'
+                      label='email or userName'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
@@ -346,7 +346,7 @@ const LoginPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ mr: 2, color: 'text.secondary' }}> Want to be one of us ?</Typography>
                 <Typography href='/register' component={Link} sx={{ color: 'primary.main', textDecoration: 'none' }}>
-                  Register
+                  Sign up
                 </Typography>
               </Box>
               <Divider

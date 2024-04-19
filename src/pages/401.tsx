@@ -45,12 +45,12 @@ const Error401 = () => {
             401
           </Typography>
           <Typography variant='h5' sx={{ mb: 2.5, fontSize: '1.5rem !important' }}>
-            عدم دسترسی! 🔐
+            Don't Aceess 🔐
           </Typography>
-          <Typography variant='body2'>شما به صفحه مورد نظر دسترسی ندارید ! </Typography>
+          <Typography variant='body2'>You Don't Access to this Page! </Typography>
         </BoxWrapper>
         <Button href='/' component={Link} variant='contained' sx={{ px: 5.5 }}>
-          بازگشت به خانه
+          Back Home{' '}
         </Button>
         <Img alt='error-illustration' src='/images/pages/401.png' />
       </Box>

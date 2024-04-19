@@ -4,19 +4,17 @@ import { ReactNode, useState } from 'react'
 // ** Next Import
 import Link from 'next/link'
 
+import * as yup from 'yup'
+
 // ** MUI Components
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
-import InputAdornment from '@mui/material/InputAdornment'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
@@ -34,6 +32,10 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from 'src/hooks/useAuth'
+import { RegisterParams } from 'src/context/types'
 
 // ** Styled Components
 const RegisterIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -91,11 +93,21 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
+const schema = yup.object().shape({
+  username: yup.string().required(),
+  emailAddress: yup.string().email().required(),
+  password: yup.string().min(3).required(),
+  repeatPassword: yup.string().min(3).required()
+})
+const defaultValues = {
+  username: '',
+  emailAddress: '',
+  password: '',
+  repeatPassword: ''
+}
 const Register = () => {
-  // ** States
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-
   // ** Hooks
+  const auth = useAuth()
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
@@ -104,6 +116,26 @@ const Register = () => {
   const { skin } = settings
 
   const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
+
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
+  const onSubmit = (data: RegisterParams) => {
+    auth.register(data, () => {
+      setError('username', {
+        type: 'manual',
+        message: 'ایمیل و یا کلمه عبور صحیح نمیباشد'
+      })
+    })
+  }
 
   return (
     <Box className='content-right'>
@@ -218,29 +250,78 @@ const Register = () => {
               <TypographyStyled variant='h5'>Adventure starts here 🚀</TypographyStyled>
               <Typography variant='body2'>Make your app management easy and fun!</Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <TextField autoFocus fullWidth sx={{ mb: 4 }} label='Username' placeholder='johndoe' />
-              <TextField fullWidth label='Email' sx={{ mb: 4 }} placeholder='user@email.com' />
-              <FormControl fullWidth>
-                <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-                <OutlinedInput
-                  label='Password'
-                  id='auth-login-v2-password'
-                  type={showPassword ? 'text' : 'password'}
-                  endAdornment={
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+              <Controller
+                name='username'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    error={Boolean(errors.username)}
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    label='Username'
+                    placeholder='mamad'
+                  />
+                )}
+              />
+              <Controller
+                name='emailAddress'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    error={Boolean(errors.emailAddress)}
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    label='Email'
+                    placeholder='user@email.com'
+                  />
+                )}
+              />
+              <Controller
+                name='password'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    error={Boolean(errors.password)}
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    type='password'
+                    label='Password'
+                    placeholder='Password'
+                  />
+                )}
+              />
 
+              <Controller
+                name='repeatPassword'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    error={Boolean(errors.repeatPassword)}
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    type='password'
+                    label='Repeat Password'
+                    placeholder='Repeat Password'
+                  />
+                )}
+              />
               <FormControlLabel
                 control={<Checkbox />}
                 sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}

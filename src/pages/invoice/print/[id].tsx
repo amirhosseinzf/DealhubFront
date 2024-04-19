@@ -49,5 +49,8 @@ InvoicePrint.setConfig = () => {
     mode: 'light'
   }
 }
-
+InvoicePrint.acl = {
+  action: 'manage',
+  subject: 'UserManagment'
+}
 export default InvoicePrint

@@ -11,5 +11,8 @@ const InvoiceEdit = () => {
     </DatePickerWrapper>
   )
 }
-
+InvoiceEdit.acl = {
+  action: 'manage',
+  subject: 'UserManagment'
+}
 export default InvoiceEdit
