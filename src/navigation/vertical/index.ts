@@ -11,6 +11,13 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'verify-email'
     },
     {
+      title: 'Profile',
+      path: '/profile/info',
+      icon: 'mdi:user-outline',
+      action: 'read',
+      subject: 'profile-info'
+    },
+    {
       title: 'Home',
       path: '/home',
       icon: 'mdi:home-outline'
