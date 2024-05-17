@@ -1,9 +1,6 @@
 // ** Next Import
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from 'next/types'
 
-// ** Third Party Imports
-import axios from 'axios'
-
 // ** Types
 import { InvoiceType } from 'src/types/invoiceTypes'
 
@@ -12,6 +9,7 @@ import Edit from 'src/views/invoice/edit/Edit'
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 
 const InvoiceEdit = ({ id }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -22,7 +20,7 @@ const InvoiceEdit = ({ id }: InferGetStaticPropsType<typeof getStaticProps>) => 
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await axios.get('/invoice/invoices')
+  const res = await axiosInterceptorInstance.get('/invoice/invoices')
   const data: InvoiceType[] = await res.data.allData
 
   const paths = data.map((item: InvoiceType) => ({

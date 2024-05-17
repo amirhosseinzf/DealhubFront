@@ -2,8 +2,7 @@
 import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-// ** Axios Imports
-import axios from 'axios'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 
 interface DataParams {
   q: string
@@ -18,7 +17,7 @@ interface Redux {
 
 // ** Fetch Invoices
 export const fetchData = createAsyncThunk('appInvoice/fetchData', async (params: DataParams) => {
-  const response = await axios.get('/apps/invoice/invoices', {
+  const response = await axiosInterceptorInstance.get('/apps/invoice/invoices', {
     params
   })
 
@@ -28,7 +27,7 @@ export const fetchData = createAsyncThunk('appInvoice/fetchData', async (params:
 export const deleteInvoice = createAsyncThunk(
   'appInvoice/deleteData',
   async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axios.delete('/apps/invoice/delete', {
+    const response = await axiosInterceptorInstance.delete('/apps/invoice/delete', {
       data: id
     })
     await dispatch(fetchData(getState().invoice.params))

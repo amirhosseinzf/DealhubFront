@@ -1,10 +1,10 @@
-import { Grid, Card, CardHeader, CardContent, Typography } from '@mui/material'
+import { Grid, Card, CardHeader, CardContent, Typography, Button } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useSearchParams } from 'next/navigation'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 
 type Props = {}
 
@@ -23,10 +23,9 @@ function VerifyEmail({}: Props) {
 
   function sendEmailVerifaction() {
     setLoadingBtn(true)
-    axios
+    axiosInterceptorInstance
       .post(authConfig.sendEmailVerfiyEndpoint, { userAccountGuid: user?.globalId })
       .then(() => {
-        debugger
         setVerifyCode(true)
       })
       .catch(err => {
@@ -35,27 +34,30 @@ function VerifyEmail({}: Props) {
       .finally(() => setLoadingBtn(false))
   }
   function VerifyEmail() {
-    axios
+    axiosInterceptorInstance
       .post(authConfig.verifyEmailEndpoint, {
         userAccountGuid: searchParams.get('user'),
         emailVerificationCode: searchParams.get('code')
       })
       .then(({ data }) => {
-        debugger
         setVerifyMessage('Your Email : ' + data.email + ' Verfied in ' + new Date(data.emailVerifyDate))
       })
       .catch(err => {
-        debugger
         setVerifyMessage(err.response.data.Message)
       })
   }
-  debugger
+
   if (searchParams.get('code')) {
     return (
       <Grid item xs={12}>
         <Card>
           <CardHeader title='verify Email'></CardHeader>
-          <CardContent>{verifyMessage}</CardContent>
+          <CardContent>
+            {verifyMessage}{' '}
+            <Button variant='contained' href='/'>
+              show my profile
+            </Button>
+          </CardContent>
         </Card>
       </Grid>
     )

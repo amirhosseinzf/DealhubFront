@@ -4,14 +4,13 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 // ** Next Import
 import { useRouter } from 'next/router'
 
-// ** Axios
-import axios from 'axios'
-
 // ** Config
 import authConfig from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
+import toast from 'react-hot-toast'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -43,19 +42,17 @@ const AuthProvider = ({ children }: Props) => {
       if (storedToken) {
         setLoading(false)
 
-        await axios
+        await axiosInterceptorInstance
           .get(authConfig.meEndpoint, {
             headers: {
               Authorization: storedToken
             }
           })
           .then(async response => {
-            debugger
             setLoading(false)
             setUser({ ...response.data })
           })
           .catch(() => {
-            debugger
             localStorage.removeItem('userData')
             localStorage.removeItem('refreshToken')
             localStorage.removeItem('accessToken')
@@ -75,12 +72,9 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    debugger
-
-    axios
+    axiosInterceptorInstance
       .post(authConfig.loginEndpoint, params)
       .then(async response => {
-        debugger
         params.rememberMe
           ? window.localStorage.setItem(authConfig.storageTokenKeyName, 'asdfadfafafasdfsadfasfasdfasfasdf') //response.data.accessToken
           : null
@@ -95,39 +89,33 @@ const AuthProvider = ({ children }: Props) => {
       })
 
       .catch(err => {
-        debugger
         if (errorCallback) errorCallback(err)
       })
   }
   const handleRegister = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    debugger
-
-    axios
+    axiosInterceptorInstance
       .post(authConfig.registerEndpoint, params)
       .then(async response => {
-        debugger
+        router.replace('/')
+        toast.success('Register success')
 
         // params.rememberMe
         //   ? window.localStorage.setItem(authConfig.storageTokenKeyName, 'asdfadfafafasdfsadfasfasdfasfasdf') //response.data.accessToken
         //   : null
         // const returnUrl = router.query.returnUrl
-
         // setUser({ ...response.data.accountInfo })
         // params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.accountInfo)) : null
-
         // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
         // router.replace(redirectURL as string)
       })
 
       .catch(err => {
-        debugger
         if (errorCallback) errorCallback(err)
       })
   }
 
   const handleLogout = async (errorCallback?: ErrCallbackType) => {
-    await axios
+    await axiosInterceptorInstance
       .post(authConfig.logoutEndpoint)
       .then(() => {
         setUser(null)
@@ -136,7 +124,6 @@ const AuthProvider = ({ children }: Props) => {
         router.push('/login')
       })
       .catch(err => {
-        debugger
         if (errorCallback) errorCallback(err)
       })
   }

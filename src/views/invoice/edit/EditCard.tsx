@@ -28,7 +28,6 @@ import CardContent, { CardContentProps } from '@mui/material/CardContent'
 import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
-import axios from 'axios'
 import DatePicker from 'react-datepicker'
 
 // ** Configs
@@ -40,6 +39,7 @@ import { SingleInvoiceType, InvoiceClientType } from 'src/types/invoiceTypes'
 
 // ** Custom Component Imports
 import Repeater from 'src/@core/components/repeater'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 
 interface Props {
   data: SingleInvoiceType
@@ -124,7 +124,7 @@ const EditCard = ({ data }: Props) => {
   const theme = useTheme()
 
   useEffect(() => {
-    axios.get('/invoice/clients').then(response => {
+    axiosInterceptorInstance.get('/invoice/clients').then(response => {
       if (response.data && clients === undefined) {
         setClients(response.data)
         setSelected(response.data[0].name)

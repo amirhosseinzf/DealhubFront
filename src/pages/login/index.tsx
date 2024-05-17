@@ -100,8 +100,8 @@ const schema = yup.object().shape({
 
 // 'admin''admin@materialize.com'
 const defaultValues = {
-  password: 'admin',
-  email: 'admin'
+  password: 'Amirhossein@123456',
+  email: 'a.zarif'
 }
 
 interface FormData {
@@ -134,7 +134,6 @@ const LoginPage = () => {
   })
 
   const onSubmit = (data: FormData) => {
-    debugger
     const { email, password } = data
     auth.login({ username: email, password, rememberMe, captchaResponse: 'string' }, () => {
       setError('email', {
