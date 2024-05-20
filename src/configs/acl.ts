@@ -27,6 +27,8 @@ const defineRulesFor = (userRoles: [UserRoles], subject: string) => {
         can(['read'], 'acl-page')
       } else if (element.code === 'CreateProfile') {
         can(['read'], ['profile-info'])
+      } else if (element.code === 'ManageProfiles') {
+        can(['read'], ['manage-profiles'])
       } else {
         can(['read', 'create', 'update', 'delete'], subject)
       }

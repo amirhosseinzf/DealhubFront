@@ -18,6 +18,10 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import Checkbox from '@mui/material/Checkbox'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
 
 import apiUrl from 'src/configs/api'
 
@@ -34,6 +38,7 @@ import AccountBaseInfo from 'src/views/pages/account/AccountBaseInfo'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 import toast from 'react-hot-toast'
+import ActiveAccountBaseInfo from 'src/views/pages/account/ActiveAccountBaseInfo'
 
 const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   '&:not(:last-of-type)': {
@@ -52,12 +57,27 @@ const StepperHeaderContainer = styled(CardContent)<CardContentProps>(({ theme })
     borderBottom: `1px solid ${theme.palette.divider}`
   }
 }))
-
+const generalProfileEmpty = {
+  entityType: 1,
+  firstName: '',
+  lastName: '',
+  companyName: '',
+  countryGuid: '',
+  nationalCode: '',
+  passportNumber: '',
+  companyNationalId: '',
+  phoneNumbers: [],
+  contactEmail: '',
+  websiteUrl: '',
+  ceoName: '',
+  address: ''
+}
 const Info = () => {
   // ** States
+  const [tabBaseInfo, settabBaseInfo] = useState('1')
   const [steps, setsteps] = useState([
     {
-      title: 'Personal Details',
+      title: 'General Profile',
       subtitle: 'Your Name/Email'
     }
   ])
@@ -69,9 +89,40 @@ const Info = () => {
     trusteeProfile: false
   })
   const [activeStep, setActiveStep] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [setserverData, setSetserverData] = useState(null)
 
   // Get Current User Profile
 
+  useEffect(() => {
+    getData()
+  }, [])
+  const getData = async () => {
+    setIsLoading(true)
+    const { data } = await axiosInterceptorInstance.get(apiUrl.getCurrentProfile)
+    setSetserverData(data)
+    setIsLoading(false)
+
+    // if (data.pendingProfile == null) {
+    //   return {
+    //     entityType: 1,
+    //     firstName: '',
+    //     lastName: '',
+    //     companyName: '',
+    //     countryGuid: '',
+    //     nationalCode: '',
+    //     passportNumber: '',
+    //     companyNationalId: '',
+    //     phoneNumbers: [],
+    //     contactEmail: '',
+    //     websiteUrl: '',
+    //     ceoName: '',
+    //     address: ''
+    //   }
+    // }
+
+    // return data
+  }
   const submitForms = (value: any) => {
     const sendData = {
       generalProfile: value,
@@ -98,7 +149,32 @@ const Info = () => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <AccountBaseInfo onSubmit={val => submitForms(val)} />
+        return (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={tabBaseInfo}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList onChange={tabHandleChange} aria-label='lab API tabs example'>
+                  <Tab label='pendding Profile' value='1' />
+                  <Tab label='Active Profile' value='2' />
+                </TabList>
+              </Box>
+              <TabPanel value='1'>
+                <AccountBaseInfo
+                  defaultValue={
+                    setserverData!.pendingProfile ? setserverData.pendingProfile.generalProfile : generalProfileEmpty
+                  }
+                  onSubmit={val => submitForms(val)}
+                />
+              </TabPanel>
+              <TabPanel value='2'>
+                <ActiveAccountBaseInfo
+                  defaultValue={setserverData!.activeProfile ? setserverData.activeProfile.generalProfile : null}
+                />
+              </TabPanel>
+            </TabContext>
+          </Box>
+        )
+
       case 1:
         return <></>
       case 2:
@@ -198,43 +274,51 @@ const Info = () => {
   const { buyerProfile, expertProfile, salesRepProfile, supplierProfile, trusteeProfile } = state
   const error =
     [buyerProfile, expertProfile, salesRepProfile, supplierProfile, trusteeProfile].filter(v => v).length < 1
+  const tabHandleChange = (event: React.SyntheticEvent, newValue: string) => {
+    settabBaseInfo(newValue)
+  }
 
   return (
     <>
-      {renderJobArea()}
-      <Card sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' } }}>
-        <StepperHeaderContainer>
-          <StepperWrapper sx={{ height: '100%', '& .MuiStepLabel-label': { cursor: 'pointer' } }}>
-            <Stepper connector={<></>} activeStep={activeStep} orientation='vertical'>
-              {steps.map((step, index) => {
-                return (
-                  <Step
-                    key={index}
-                    onClick={() => setActiveStep(index)}
-                    sx={{ '&.Mui-completed + svg': { color: 'primary.main' } }}
-                  >
-                    <StepLabel StepIconComponent={StepperCustomDot}>
-                      <div className='step-label'>
-                        <Typography className='step-number'>{`0${index + 1}`}</Typography>
-                        <div>
-                          <Typography className='step-title'>{step.title}</Typography>
-                          <Typography className='step-subtitle'>{step.subtitle}</Typography>
-                        </div>
-                      </div>
-                    </StepLabel>
-                  </Step>
-                )
-              })}
-            </Stepper>
-          </StepperWrapper>
-        </StepperHeaderContainer>
-        <div>
-          <CardContent>
-            {renderContent()}
-            {renderFooter()}
-          </CardContent>
-        </div>
-      </Card>
+      {isLoading && <div>Loading</div>}
+      {!isLoading && (
+        <>
+          {renderJobArea()}
+          <Card sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' } }}>
+            <StepperHeaderContainer>
+              <StepperWrapper sx={{ height: '100%', '& .MuiStepLabel-label': { cursor: 'pointer' } }}>
+                <Stepper connector={<></>} activeStep={activeStep} orientation='vertical'>
+                  {steps.map((step, index) => {
+                    return (
+                      <Step
+                        key={index}
+                        onClick={() => setActiveStep(index)}
+                        sx={{ '&.Mui-completed + svg': { color: 'primary.main' } }}
+                      >
+                        <StepLabel StepIconComponent={StepperCustomDot}>
+                          <div className='step-label'>
+                            <Typography className='step-number'>{`0${index + 1}`}</Typography>
+                            <div>
+                              <Typography className='step-title'>{step.title}</Typography>
+                              <Typography className='step-subtitle'>{step.subtitle}</Typography>
+                            </div>
+                          </div>
+                        </StepLabel>
+                      </Step>
+                    )
+                  })}
+                </Stepper>
+              </StepperWrapper>
+            </StepperHeaderContainer>
+            <div>
+              <CardContent>
+                {renderContent()}
+                {renderFooter()}
+              </CardContent>
+            </div>
+          </Card>
+        </>
+      )}
     </>
   )
 }

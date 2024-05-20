@@ -18,6 +18,13 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'profile-info'
     },
     {
+      title: 'Manage Profile',
+      path: '/manage/profile',
+      icon: 'mdi:user-outline',
+      action: 'read',
+      subject: 'manage-profiles'
+    },
+    {
       title: 'Home',
       path: '/home',
       icon: 'mdi:home-outline'

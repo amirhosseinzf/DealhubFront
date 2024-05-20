@@ -1,5 +1,5 @@
 export type GeneralProfile = {
-  entityType: 1
+  entityType: 1 | 2
   firstName: string
   lastName: string
   companyName: string
