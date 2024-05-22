@@ -57,7 +57,9 @@ const GlobalStyles = (theme: Theme) => {
         }
       }
     },
-
+    '.MuiModal-root': {
+      zIndex: '1200 !important'
+    },
     '#nprogress': {
       pointerEvents: 'none',
       '& .bar': {

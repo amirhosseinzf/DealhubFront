@@ -1,5 +1,9 @@
+const apiUrl = 'https://localhost'
 export default {
-  getCountry: 'https://localhost/api/Country/GetList',
-  getCurrentProfile: 'https://localhost/api/Profile/GetCurrent',
-  CreateOrEditProfile: 'https://localhost/api/Profile/CreateOrEdit'
+  profileAttachment: `${apiUrl}/api/Profile/Attachment/Add`,
+  getCountry: `${apiUrl}/api/Country/GetList`,
+  getCurrentProfile: `${apiUrl}/api/Profile/GetCurrent`,
+  CreateOrEditProfile: `${apiUrl}/api/Profile/CreateOrEdit`,
+  getChangesRequest: `${apiUrl}/api/Profile/ChangeRequest/GetList`,
+  sendForEvaluation: `${apiUrl}/api/Profile/SendForEvaluation`
 }

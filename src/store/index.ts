@@ -3,10 +3,12 @@ import { configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
 import invoice from 'src/store/invoice'
+import manageProfile from 'src/store/manageProfile'
 
 export const store = configureStore({
   reducer: {
-    invoice
+    invoice,
+    manageProfile
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

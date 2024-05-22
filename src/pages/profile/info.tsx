@@ -90,7 +90,7 @@ const Info = () => {
   })
   const [activeStep, setActiveStep] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
-  const [setserverData, setSetserverData] = useState(null)
+  const [serverData, setserverData] = useState<any>(null)
 
   // Get Current User Profile
 
@@ -100,28 +100,15 @@ const Info = () => {
   const getData = async () => {
     setIsLoading(true)
     const { data } = await axiosInterceptorInstance.get(apiUrl.getCurrentProfile)
-    setSetserverData(data)
+    setserverData(data)
     setIsLoading(false)
-
-    // if (data.pendingProfile == null) {
-    //   return {
-    //     entityType: 1,
-    //     firstName: '',
-    //     lastName: '',
-    //     companyName: '',
-    //     countryGuid: '',
-    //     nationalCode: '',
-    //     passportNumber: '',
-    //     companyNationalId: '',
-    //     phoneNumbers: [],
-    //     contactEmail: '',
-    //     websiteUrl: '',
-    //     ceoName: '',
-    //     address: ''
-    //   }
-    // }
-
-    // return data
+  }
+  const handleEvaluate = () => {
+    axiosInterceptorInstance
+      .post(apiUrl.sendForEvaluation, { changeRequestGuid: serverData.pendingProfile.changeRequestGuid })
+      .then(() => {
+        alert('success send')
+      })
   }
   const submitForms = (value: any) => {
     const sendData = {
@@ -161,14 +148,15 @@ const Info = () => {
               <TabPanel value='1'>
                 <AccountBaseInfo
                   defaultValue={
-                    setserverData!.pendingProfile ? setserverData.pendingProfile.generalProfile : generalProfileEmpty
+                    serverData!.pendingProfile ? serverData.pendingProfile.generalProfile : generalProfileEmpty
                   }
+                  pendingProfile={serverData!.pendingProfile}
                   onSubmit={val => submitForms(val)}
                 />
               </TabPanel>
               <TabPanel value='2'>
                 <ActiveAccountBaseInfo
-                  defaultValue={setserverData!.activeProfile ? setserverData.activeProfile.generalProfile : null}
+                  defaultValue={serverData!.activeProfile ? serverData.activeProfile.generalProfile : null}
                 />
               </TabPanel>
             </TabContext>
@@ -210,7 +198,7 @@ const Info = () => {
           variant='contained'
           color={stepCondition ? 'success' : 'primary'}
           {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
-          onClick={() => (stepCondition ? alert('Evaluated..!!') : handleNext())}
+          onClick={() => (stepCondition ? handleEvaluate() : handleNext())}
         >
           {stepCondition ? 'Evaluate' : 'Next'}
         </Button>

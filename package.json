@@ -54,6 +54,7 @@
     "payment": "2.4.6",
     "prismjs": "1.29.0",
     "react": "18.2.0",
+    "react-advanced-cropper": "^0.19.6",
     "react-apexcharts": "1.4.0",
     "react-chartjs-2": "5.2.0",
     "react-credit-cards": "0.8.3",

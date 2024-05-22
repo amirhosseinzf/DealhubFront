@@ -26,6 +26,8 @@ import apiUrl from 'src/configs/api'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 import { GeneralProfile } from 'src/types/forms/profile'
 import Icon from 'src/@core/components/icon'
+import FileUplader from 'src/@core/components/file-uploader'
+import toast from 'react-hot-toast'
 
 const schema = yup.object({
   entityType: yup.number(),
@@ -75,10 +77,11 @@ const schema = yup.object({
 
 type Props = {
   defaultValue: GeneralProfile
+  pendingProfile: any
   onSubmit: (value: GeneralProfile) => void
 }
 
-function AccountBaseInfo({ onSubmit, defaultValue }: Props) {
+function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
   const [countryData, setCountryData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -110,6 +113,11 @@ function AccountBaseInfo({ onSubmit, defaultValue }: Props) {
 
   const submitForm = (data: GeneralProfile) => {
     onSubmit(data)
+  }
+  const deleteImage = (id: string) => {
+    axiosInterceptorInstance.delete(`/api/Profile/Attachment/Delete/${id}`).then(() => {
+      toast.success('suucessfully deleted')
+    })
   }
 
   return (
@@ -465,13 +473,79 @@ function AccountBaseInfo({ onSubmit, defaultValue }: Props) {
                   <Typography color='red'>{errors.phoneNumbers.message || ''}</Typography>
                 )}
               </Grid>
-
-              {/* <Grid item xs={12} md={4}>
-              <Button variant='contained' component='label'>
-                Upload File
-              </Button>
-              <input type='file' />
-            </Grid> */}
+              {pendingProfile != null && (
+                <>
+                  <Grid item xs={12} md={4}>
+                    {pendingProfile && pendingProfile.profilePicUrl && (
+                      <div>
+                        {' '}
+                        <img
+                          alt='profilePicUrl'
+                          style={{ maxWidth: '150px', maxHeight: '150px' }}
+                          src={pendingProfile.profilePicUrl.downloadAbsoluteUrl}
+                        />
+                        <Icon
+                          onClick={() => deleteImage(pendingProfile.profilePicUrl.attachmentGuid)}
+                          icon='mdi:trash'
+                          color='red'
+                        />
+                      </div>
+                    )}
+                    <FileUplader
+                      title='Profile Picture'
+                      id='ProfilePic'
+                      url='/api/Profile/Attachment/Add'
+                      params={{ flag: 'ProfilePic', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    {pendingProfile && pendingProfile.nationalCardScanUrl && (
+                      <div>
+                        {' '}
+                        <img
+                          style={{ maxWidth: '150px', maxHeight: '150px' }}
+                          alt='NationalCard'
+                          src={pendingProfile.nationalCardScanUrl.downloadAbsoluteUrl}
+                        />
+                        <Icon
+                          onClick={() => deleteImage(pendingProfile.nationalCardScanUrl.attachmentGuid)}
+                          icon='mdi:trash'
+                          color='red'
+                        />
+                      </div>
+                    )}
+                    <FileUplader
+                      title='National Card Picture'
+                      id='NationalCard'
+                      url='/api/Profile/Attachment/Add'
+                      params={{ flag: 'NationalCard', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    {pendingProfile && pendingProfile.passportScanUrl && (
+                      <div>
+                        {' '}
+                        <img
+                          style={{ maxWidth: '150px', maxHeight: '150px' }}
+                          alt='Passport'
+                          src={pendingProfile.passportScanUrl.downloadAbsoluteUrl}
+                        />
+                        <Icon
+                          onClick={() => deleteImage(pendingProfile.passportScanUrl.attachmentGuid)}
+                          icon='mdi:trash'
+                          color='red'
+                        />
+                      </div>
+                    )}
+                    <FileUplader
+                      title='Passport Picture'
+                      id='Passport'
+                      url='/api/Profile/Attachment/Add'
+                      params={{ flag: 'Passport', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                    />
+                  </Grid>
+                </>
+              )}
 
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ my: 7 }}>
                 submit
