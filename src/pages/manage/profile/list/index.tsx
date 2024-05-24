@@ -226,7 +226,12 @@ const InvoiceList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='View'>
-              <IconButton size='small' component={Link} sx={{ mr: 0.5 }} href={`/invoice/preview/${row}`}>
+              <IconButton
+                size='small'
+                component={Link}
+                sx={{ mr: 0.5 }}
+                href={`/manage/profile/preview/${row.globalId}`}
+              >
                 <Icon icon='mdi:eye-outline' />
               </IconButton>
             </Tooltip>

@@ -1,5 +1,4 @@
 import Preview from 'src/views/manageProfile/preview/Preview'
-import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 import { useSearchParams } from 'next/navigation'
 
 const ProfilePreview = () => {
