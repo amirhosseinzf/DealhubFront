@@ -107,7 +107,8 @@ const Info = () => {
     axiosInterceptorInstance
       .post(apiUrl.sendForEvaluation, { changeRequestGuid: serverData.pendingProfile.changeRequestGuid })
       .then(() => {
-        alert('success send')
+        toast.success('successfully sent your profile')
+        getData()
       })
   }
   const submitForms = (value: any) => {
@@ -121,6 +122,7 @@ const Info = () => {
     }
     axiosInterceptorInstance.post(apiUrl.CreateOrEditProfile, sendData).then(() => {
       toast.success('successfully sumbmited')
+      getData()
     })
   }
 
@@ -147,6 +149,7 @@ const Info = () => {
               </Box>
               <TabPanel value='1'>
                 <AccountBaseInfo
+                  onNeedRefresh={() => getData()}
                   defaultValue={
                     serverData!.pendingProfile ? serverData.pendingProfile.generalProfile : generalProfileEmpty
                   }
@@ -196,6 +199,7 @@ const Info = () => {
         </Button>
         <Button
           variant='contained'
+          disabled={serverData.pendingProfile == null}
           color={stepCondition ? 'success' : 'primary'}
           {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
           onClick={() => (stepCondition ? handleEvaluate() : handleNext())}

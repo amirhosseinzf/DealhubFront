@@ -204,7 +204,7 @@ const InvoiceList = () => {
   }
   const handleApproveOrReject = (decision: number) => {
     const data = {
-      changeRequestGuid: selectedItem.changeRequestGuid,
+      changeRequestGuid: selectedItem.globalId,
       decision,
       rejectionComment: rejectionComment
     }

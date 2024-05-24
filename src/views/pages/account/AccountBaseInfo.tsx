@@ -28,6 +28,23 @@ import { GeneralProfile } from 'src/types/forms/profile'
 import Icon from 'src/@core/components/icon'
 import FileUplader from 'src/@core/components/file-uploader'
 import toast from 'react-hot-toast'
+import { ThemeColor } from 'src/@core/layouts/types'
+import CustomChip from 'src/@core/components/mui/chip'
+
+interface profileStatusObj {
+  [key: string]: {
+    icon: string
+    color: ThemeColor
+  }
+}
+
+// ** Vars
+const profileStatusObj: profileStatusObj = {
+  Draft: { color: 'primary', icon: 'mdi:content-save-outline' },
+  Pending: { color: 'warning', icon: 'mdi:progress-clock' },
+  Approved: { color: 'success', icon: 'mdi:check' },
+  Rejected: { color: 'error', icon: 'mdi:information-outline' }
+}
 
 const schema = yup.object({
   entityType: yup.number(),
@@ -79,9 +96,10 @@ type Props = {
   defaultValue: GeneralProfile
   pendingProfile: any
   onSubmit: (value: GeneralProfile) => void
+  onNeedRefresh: () => void
 }
 
-function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
+function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile }: Props) {
   const [countryData, setCountryData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -117,12 +135,26 @@ function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
   const deleteImage = (id: string) => {
     axiosInterceptorInstance.delete(`/api/Profile/Attachment/Delete/${id}`).then(() => {
       toast.success('suucessfully deleted')
+      onNeedRefresh()
     })
   }
 
   return (
     <Card>
-      <CardHeader title='Your Profile' />
+      <CardHeader
+        title={
+          <>
+            Your Profile
+            {pendingProfile && pendingProfile.approvalStatusDisplayName && (
+              <CustomChip
+                icon={<Icon icon={profileStatusObj[pendingProfile.approvalStatusDisplayName].icon}></Icon>}
+                color={profileStatusObj[pendingProfile.approvalStatusDisplayName].color}
+                label={pendingProfile.approvalStatusDisplayName}
+              />
+            )}
+          </>
+        }
+      />
       {isLoading && (
         <CardContent>
           <CircularProgress />
@@ -492,6 +524,9 @@ function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
                       </div>
                     )}
                     <FileUplader
+                      onUploaded={() => {
+                        onNeedRefresh()
+                      }}
                       title='Profile Picture'
                       id='ProfilePic'
                       url='/api/Profile/Attachment/Add'
@@ -515,6 +550,9 @@ function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
                       </div>
                     )}
                     <FileUplader
+                      onUploaded={() => {
+                        onNeedRefresh()
+                      }}
                       title='National Card Picture'
                       id='NationalCard'
                       url='/api/Profile/Attachment/Add'
@@ -538,6 +576,9 @@ function AccountBaseInfo({ onSubmit, defaultValue, pendingProfile }: Props) {
                       </div>
                     )}
                     <FileUplader
+                      onUploaded={() => {
+                        onNeedRefresh()
+                      }}
                       title='Passport Picture'
                       id='Passport'
                       url='/api/Profile/Attachment/Add'

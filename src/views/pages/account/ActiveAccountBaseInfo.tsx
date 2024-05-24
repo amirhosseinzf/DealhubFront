@@ -86,8 +86,8 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         aria-labelledby='demo-row-radio-buttons-group-label'
                         name='entityType'
                       >
-                        <FormControlLabel value={1} control={<Radio />} label='Juridical' />
-                        <FormControlLabel value={2} control={<Radio />} label='Natural' />
+                        <FormControlLabel disabled value={1} control={<Radio />} label='Juridical' />
+                        <FormControlLabel disabled value={2} control={<Radio />} label='Natural' />
                       </RadioGroup>
                     )}
                   />
@@ -105,6 +105,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
 
                       return (
                         <Autocomplete
+                          disabled
                           value={currentValue}
                           onChange={(event, newValue) => {
                             onChange(newValue ? newValue.globalId : null)
@@ -152,6 +153,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='first Name'
                             value={value}
                             onBlur={onBlur}
@@ -171,6 +173,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='last Name'
                             value={value}
                             onBlur={onBlur}
@@ -191,6 +194,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                           rules={{ required: true }}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField
+                              disabled
                               label='national Code'
                               value={value}
                               onBlur={onBlur}
@@ -211,6 +215,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='Passport Number'
                             value={value}
                             onBlur={onBlur}
@@ -234,6 +239,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='company Name'
                             value={value}
                             onBlur={onBlur}
@@ -253,6 +259,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='Company National Id'
                             value={value}
                             onBlur={onBlur}
@@ -272,6 +279,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                         rules={{ required: true }}
                         render={({ field: { value, onChange, onBlur } }) => (
                           <TextField
+                            disabled
                             label='CeoName'
                             value={value}
                             onBlur={onBlur}
@@ -294,6 +302,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
+                        disabled
                         label='Email'
                         value={value}
                         onBlur={onBlur}
@@ -313,6 +322,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
+                        disabled
                         label='Web Site'
                         value={value}
                         onBlur={onBlur}
@@ -332,6 +342,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
+                        disabled
                         label='Address'
                         value={value}
                         onBlur={onBlur}
@@ -347,6 +358,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
               {fields.map((item, index) => (
                 <Grid item xs={12} md={4} key={item.id}>
                   <TextField
+                    disabled
                     label='PhoneNumber'
                     {...register(`phoneNumbers.${index}` as const)}
                     helperText='Enter Phone Number with Code'
@@ -355,6 +367,56 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                   />
                 </Grid>
               ))}
+              <Grid container>
+                {defaultValue && defaultValue.profilePicUrl && (
+                  <Grid item xs={12} md={4}>
+                    <div>
+                      <div>{'Profile Picture'}</div>
+                      <img
+                        alt='profilePicUrl'
+                        style={{ maxWidth: '150px', maxHeight: '150px' }}
+                        src={defaultValue.profilePicUrl.downloadAbsoluteUrl}
+                      />
+                    </div>
+                  </Grid>
+                )}
+                {defaultValue && defaultValue.nationalCardScanUrl && (
+                  <Grid item xs={12} md={4}>
+                    <div>
+                      <div>{'NationalCard Scan'}</div>
+                      <img
+                        alt='nationalCardScanUrl'
+                        style={{ maxWidth: '150px', maxHeight: '150px' }}
+                        src={defaultValue.nationalCardScanUrl.downloadAbsoluteUrl}
+                      />
+                    </div>
+                  </Grid>
+                )}
+                {defaultValue && defaultValue.passportScanUrl && (
+                  <Grid item xs={12} md={4}>
+                    <div>
+                      <div>{'Passport Scan'}</div>
+                      <img
+                        alt='passportScanUrl'
+                        style={{ maxWidth: '150px', maxHeight: '150px' }}
+                        src={defaultValue.passportScanUrl.downloadAbsoluteUrl}
+                      />
+                    </div>
+                  </Grid>
+                )}
+                {defaultValue && defaultValue.registrationCertificateScanUrl && (
+                  <Grid item xs={12} md={4}>
+                    <div>
+                      <div>{'Registration Certificate Scan '}</div>
+                      <img
+                        alt='registrationCertificateScanUrl'
+                        style={{ maxWidth: '150px', maxHeight: '150px' }}
+                        src={defaultValue.registrationCertificateScanUrl.downloadAbsoluteUrl}
+                      />
+                    </div>
+                  </Grid>
+                )}
+              </Grid>
             </Grid>
           </form>
         </CardContent>

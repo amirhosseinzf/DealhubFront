@@ -52,6 +52,7 @@ type Props = {
   title: string
   url: string
   params: Params
+  onUploaded: () => void
 }
 type Params = {
   referenceEntityGuid: string
@@ -59,7 +60,7 @@ type Params = {
   description?: string
 }
 
-const FileUplader = ({ id, title, url, params }: Props) => {
+const FileUplader = ({ onUploaded, title, url, params }: Props) => {
   const previewRef = useRef<CropperPreviewRef>(null)
   const cropperRef = useRef<CropperRef>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -114,6 +115,8 @@ const FileUplader = ({ id, title, url, params }: Props) => {
             .post(url, form, { params })
             .then(() => {
               toast.success('successfully uploaded')
+              onUploaded()
+              setOpen(false)
             })
             .finally(() => setloadingBtn(false))
         }
