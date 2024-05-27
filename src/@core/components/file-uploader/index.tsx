@@ -102,7 +102,6 @@ const FileUplader = ({ onUploaded, title, url, params }: Props) => {
     setOpen(false)
   }
   const onUploadToServer = () => {
-    debugger
     setloadingBtn(true)
     const canvas = cropperRef.current?.getCanvas()
     if (canvas) {

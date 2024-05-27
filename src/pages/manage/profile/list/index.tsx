@@ -172,7 +172,6 @@ const InvoiceList = () => {
   }
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
     const arrayresult = sortModel.map(item => {
-      debugger
       if (item.sort == 'desc') {
         return '-' + item.field
       }

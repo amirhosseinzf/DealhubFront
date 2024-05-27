@@ -50,9 +50,9 @@ const schema = yup.object({
   entityType: yup.number(),
   phoneNumbers: yup
     .array()
-    .required('Must have at least one phone number')
+    .required('Must supply at least one phone number')
     .of(yup.string().required('Phone number is required'))
-    .min(1, 'Must have at least one phone number'),
+    .min(1, 'Must supply at least one phone number'),
   contactEmail: yup.string().email(),
   countryGuid: yup.string().required('Country is a required field'),
   firstName: yup.string().when('entityType', {
@@ -166,7 +166,6 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
             <Grid container spacing={2}>
               <Grid item md={12}>
                 <FormControl>
-                  <FormLabel id='demo-row-radio-buttons-group-label'>you are ?</FormLabel>
                   <Controller
                     name='entityType'
                     control={control}
@@ -193,7 +192,6 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => {
-                      debugger
                       const currentValue: any = countryData.find((val: any) => val.globalId == value)
 
                       return (
@@ -409,7 +407,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        label='Email'
+                        label='Contact Email'
                         value={value}
                         onBlur={onBlur}
                         onChange={onChange}
@@ -589,7 +587,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
               )}
 
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ my: 7 }}>
-                submit
+                Save
               </Button>
             </Grid>
           </form>

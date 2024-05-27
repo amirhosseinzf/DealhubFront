@@ -101,13 +101,14 @@ const Info = () => {
     setIsLoading(true)
     const { data } = await axiosInterceptorInstance.get(apiUrl.getCurrentProfile)
     setserverData(data)
+    if (data.activeProfile != null) settabBaseInfo('2')
     setIsLoading(false)
   }
   const handleEvaluate = () => {
     axiosInterceptorInstance
       .post(apiUrl.sendForEvaluation, { changeRequestGuid: serverData.pendingProfile.changeRequestGuid })
       .then(() => {
-        toast.success('successfully sent your profile')
+        toast.success('Your new profile was successfully sent for evaluation!')
         getData()
       })
   }
@@ -121,7 +122,7 @@ const Info = () => {
       trusteeProfile: null
     }
     axiosInterceptorInstance.post(apiUrl.CreateOrEditProfile, sendData).then(() => {
-      toast.success('successfully sumbmited')
+      toast.success('successfully saved')
       getData()
     })
   }
@@ -143,8 +144,8 @@ const Info = () => {
             <TabContext value={tabBaseInfo}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={tabHandleChange} aria-label='lab API tabs example'>
-                  <Tab label='pendding Profile' value='1' />
                   <Tab label='Active Profile' value='2' />
+                  <Tab label='Edit profile' value='1' />
                 </TabList>
               </Box>
               <TabPanel value='1'>
@@ -204,7 +205,7 @@ const Info = () => {
           {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
           onClick={() => (stepCondition ? handleEvaluate() : handleNext())}
         >
-          {stepCondition ? 'Evaluate' : 'Next'}
+          {stepCondition ? 'Send for Evaluation' : 'Next'}
         </Button>
       </Box>
     )
@@ -212,8 +213,8 @@ const Info = () => {
   const renderJobArea = () => {
     return (
       <Card sx={{ mb: 1 }}>
-        <FormControl required error={error} component='fieldset' sx={{ m: 3 }} variant='standard'>
-          <FormLabel component='legend'>Job Area</FormLabel>
+        <FormControl component='fieldset' sx={{ m: 3 }} variant='standard'>
+          <FormLabel component='legend'>Select your role(s) :</FormLabel>
           <FormGroup row>
             <FormControlLabel
               control={<Checkbox checked={buyerProfile} onChange={handleChange} name='buyerProfile' />}
@@ -236,7 +237,6 @@ const Info = () => {
               label='Trustee'
             />
           </FormGroup>
-          <FormHelperText>You must pick atleast one option</FormHelperText>
         </FormControl>
       </Card>
     )
@@ -264,8 +264,6 @@ const Info = () => {
     }
   }
   const { buyerProfile, expertProfile, salesRepProfile, supplierProfile, trusteeProfile } = state
-  const error =
-    [buyerProfile, expertProfile, salesRepProfile, supplierProfile, trusteeProfile].filter(v => v).length < 1
   const tabHandleChange = (event: React.SyntheticEvent, newValue: string) => {
     settabBaseInfo(newValue)
   }

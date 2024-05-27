@@ -20,11 +20,9 @@ interface Redux {
 
 // ** Fetch manageProfiles
 export const fetchData = createAsyncThunk('manageProfile/fetchData', async (params: DataParams) => {
-  debugger
   const response = await axiosInterceptorInstance.get(apiUrl.getChangesRequest, {
     params
   })
-  debugger
 
   return response.data
 })
@@ -61,7 +59,6 @@ export const manageProfileSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      debugger
       state.data = action.payload.items
       state.pageNumber = action.payload.pageNumber
       state.pageSize = action.payload.pageSize

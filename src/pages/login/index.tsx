@@ -94,14 +94,14 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 
 // .email('ایمیل صحیح نمیباشد')
 const schema = yup.object().shape({
-  email: yup.string().required('ایمیل اجباری است'),
-  password: yup.string().min(3, 'کلمه عبور حداقل باید 5 کارکتر باشد').required('کلمه عبور اجباری است')
+  email: yup.string().required(),
+  password: yup.string().min(3).required()
 })
 
 // 'admin''admin@materialize.com'
 const defaultValues = {
-  password: 'Amirhossein@123456',
-  email: 'a.zarif'
+  password: '',
+  email: ''
 }
 
 interface FormData {
@@ -256,8 +256,8 @@ const LoginPage = () => {
               </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>{`Wellcome to  ${themeConfig.templateName}  ! 👋🏻`}</TypographyStyled>
-              <Typography variant='body2'>For login Please Enter email or username and password</Typography>
+              <TypographyStyled variant='h5'>{`Wellcome to  ${themeConfig.templateName}  !`}</TypographyStyled>
+              <Typography variant='body2'>To login, please enter your username or email and password</Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
@@ -276,7 +276,7 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
                       autoFocus
-                      label='email or userName'
+                      label='Username or Email'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
@@ -299,7 +299,7 @@ const LoginPage = () => {
                     <OutlinedInput
                       value={value}
                       onBlur={onBlur}
-                      label='password'
+                      label='Password'
                       onChange={onChange}
                       id='auth-login-v2-password'
                       error={Boolean(errors.password)}
@@ -344,12 +344,12 @@ const LoginPage = () => {
                 Login
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ mr: 2, color: 'text.secondary' }}> Want to be one of us ?</Typography>
+                <Typography sx={{ mr: 2, color: 'text.secondary' }}> Don't have an account?</Typography>
                 <Typography href='/register' component={Link} sx={{ color: 'primary.main', textDecoration: 'none' }}>
                   Sign up
                 </Typography>
               </Box>
-              <Divider
+              {/* <Divider
                 sx={{
                   '& .MuiDivider-wrapper': { px: 4 },
                   mt: theme => `${theme.spacing(5)} !important`,
@@ -357,8 +357,8 @@ const LoginPage = () => {
                 }}
               >
                 or
-              </Divider>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              </Divider> */}
+              {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <IconButton
                   href='/'
                   component={Link}
@@ -391,7 +391,7 @@ const LoginPage = () => {
                 >
                   <Icon icon='mdi:google' />
                 </IconButton>
-              </Box>
+              </Box> */}
             </form>
           </BoxWrapper>
         </Box>

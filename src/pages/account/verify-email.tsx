@@ -51,11 +51,13 @@ function VerifyEmail({}: Props) {
     return (
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='verify Email'></CardHeader>
+          <CardHeader title='Email verification successful!'></CardHeader>
           <CardContent>
-            {verifyMessage}{' '}
+            <Typography sx={{ mb: 2 }}>Your account is now active.</Typography>
+            <Typography sx={{ mb: 2 }}>Please create a profile to proceed!</Typography>
+
             <Button variant='contained' href='/'>
-              show my profile
+              Create a profile
             </Button>
           </CardContent>
         </Card>
@@ -68,15 +70,18 @@ function VerifyEmail({}: Props) {
       {!verifyCode && (
         <Grid item xs={12}>
           <Card>
-            <CardHeader title='Your account has been Created 🚀 😘'></CardHeader>
+            <CardHeader title='Your account has been created successfully!'></CardHeader>
             <CardContent>
-              <Typography sx={{ mb: 2 }}>Active Your Account.</Typography>
-              <Typography>
-                For activate your account please verify your email.{' '}
-                <LoadingButton loading={loadingBtn} onClick={() => sendEmailVerifaction()} variant='outlined'>
-                  Send Email Verifation
-                </LoadingButton>
-              </Typography>
+              <Typography sx={{ mb: 2 }}>Please activate your account!</Typography>
+              <Typography>To activate your account, please verify your email address.</Typography>
+              <LoadingButton
+                sx={{ mt: 4 }}
+                loading={loadingBtn}
+                onClick={() => sendEmailVerifaction()}
+                variant='outlined'
+              >
+                Send Email Verification
+              </LoadingButton>
             </CardContent>
           </Card>
         </Grid>
@@ -84,8 +89,15 @@ function VerifyEmail({}: Props) {
       {verifyCode && (
         <Grid item xs={12}>
           <Card>
-            <CardHeader title='Hooooraaaa Your verify code sent to your email 🙌 '></CardHeader>
-            <CardContent>Please check your email and active your account </CardContent>
+            <CardHeader title='A verification link was sent to your email'></CardHeader>
+            <CardContent>
+              <Typography sx={{ mb: 2 }}>
+                Please check your email and follow the instructions to activate your account.
+              </Typography>
+              <Typography variant='subtitle2' sx={{ mb: 2 }}>
+                If you didn't receive the activation email, please check your spam folder.
+              </Typography>
+            </CardContent>
           </Card>
         </Grid>
       )}

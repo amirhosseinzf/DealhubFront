@@ -4,7 +4,7 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   return [
     {
-      title: 'verify Email',
+      title: 'Email Verification',
       path: '/account/verify-email',
       icon: 'mdi:lock-outline',
       action: 'read',

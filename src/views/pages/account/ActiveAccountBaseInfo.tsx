@@ -100,7 +100,6 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => {
-                      debugger
                       const currentValue: any = countryData.find((val: any) => val.globalId == value)
 
                       return (

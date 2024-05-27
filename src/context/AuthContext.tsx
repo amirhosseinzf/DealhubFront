@@ -97,7 +97,7 @@ const AuthProvider = ({ children }: Props) => {
       .post(authConfig.registerEndpoint, params)
       .then(async response => {
         router.replace('/')
-        toast.success('Register success')
+        toast.success('Your account has been created successfully!')
 
         // params.rememberMe
         //   ? window.localStorage.setItem(authConfig.storageTokenKeyName, 'asdfadfafafasdfsadfasfasdfasfasdf') //response.data.accessToken
