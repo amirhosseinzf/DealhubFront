@@ -4,11 +4,13 @@ import { configureStore } from '@reduxjs/toolkit'
 // ** Reducers
 import invoice from 'src/store/invoice'
 import manageProfile from 'src/store/manageProfile'
+import manageProductCategories from 'src/store/manageProductCategories'
 
 export const store = configureStore({
   reducer: {
     invoice,
-    manageProfile
+    manageProfile,
+    manageProductCategories
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -12,10 +12,10 @@ import {
   Autocomplete,
   Box,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material'
 import apiUrl from 'src/configs/api'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
@@ -73,7 +73,6 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
             <Grid container spacing={2}>
               <Grid item md={12}>
                 <FormControl>
-                  <FormLabel id='demo-row-radio-buttons-group-label'>you are ?</FormLabel>
                   <Controller
                     name='entityType'
                     control={control}
@@ -184,7 +183,7 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                       />
                     </FormControl>
                   </Grid>
-                  {watch('countryGuid') == 'f27dc5b6-de42-44cf-8449-69cacb74e612' && (
+                  {watch('countryGuid') == 'ac49eb27-d67a-4e5a-8f20-0be4aebcfef4' && (
                     <Grid item xs={12} md={6}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
@@ -366,6 +365,9 @@ function ActiveAccountBaseInfo({ defaultValue }: Props) {
                   />
                 </Grid>
               ))}
+              <Grid item xs={12}>
+                <Divider sx={{ my: theme => `${theme.spacing(3)} !important` }} />
+              </Grid>
               <Grid container>
                 {defaultValue && defaultValue.profilePicUrl && (
                   <Grid item xs={12} md={4}>

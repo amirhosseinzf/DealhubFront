@@ -32,10 +32,15 @@ axiosInterceptorInstance.interceptors.response.use(
   },
   error => {
     // Handle response errors here
-
+    debugger
     if (error.response.status === 401 || error.response.status === 419) {
       alert('Your time is up')
       location.reload()
+    } else if (error.response.status === 403) {
+      toast.error(error.response.data.Messages[0], {
+        duration: 6000,
+        position: 'top-center'
+      })
     } else if (error.response.status === 400) {
       let errorText = ''
       error.response.data.Messages.forEach((element: string) => {

@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -14,22 +14,23 @@ import {
   Autocomplete,
   Box,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   InputAdornment,
   IconButton,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material'
 import apiUrl from 'src/configs/api'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
-import { GeneralProfile } from 'src/types/forms/profile'
+import { GeneralProfile, PendingProfileData } from 'src/types/forms/profile'
 import Icon from 'src/@core/components/icon'
 import FileUplader from 'src/@core/components/file-uploader'
 import toast from 'react-hot-toast'
 import { ThemeColor } from 'src/@core/layouts/types'
 import CustomChip from 'src/@core/components/mui/chip'
+import { ProfileContext } from 'src/context/ProfileContext'
 
 interface profileStatusObj {
   [key: string]: {
@@ -66,12 +67,12 @@ const schema = yup.object({
     otherwise: schema => schema.notRequired()
   }),
   nationalCode: yup.string().when(['entityType', 'countryGuid'], {
-    is: (value: [number, string]) => value[0] == 2 && value[1] == 'f27dc5b6-de42-44cf-8449-69cacb74e612',
+    is: (value: [number, string]) => value[0] == 2 && value[1] == 'ac49eb27-d67a-4e5a-8f20-0be4aebcfef4',
     then: schema => schema.required(),
     otherwise: schema => schema.notRequired()
   }),
   passportNumber: yup.string().when('countryGuid', {
-    is: (value: string) => value != 'f27dc5b6-de42-44cf-8449-69cacb74e612',
+    is: (value: string) => value != 'ac49eb27-d67a-4e5a-8f20-0be4aebcfef4',
     then: schema => schema.required(),
     otherwise: schema => schema.notRequired()
   }),
@@ -86,7 +87,7 @@ const schema = yup.object({
     otherwise: schema => schema.notRequired()
   }),
   companyNationalId: yup.string().when(['entityType', 'countryGuid'], {
-    is: (value: [number, string]) => value[0] == 1 && value[1] == 'f27dc5b6-de42-44cf-8449-69cacb74e612',
+    is: (value: [number, string]) => value[0] == 1 && value[1] == 'ac49eb27-d67a-4e5a-8f20-0be4aebcfef4',
     then: schema => schema.required(),
     otherwise: schema => schema.notRequired()
   })
@@ -94,12 +95,13 @@ const schema = yup.object({
 
 type Props = {
   defaultValue: GeneralProfile
-  pendingProfile: any
-  onSubmit: (value: GeneralProfile) => void
-  onNeedRefresh: () => void
+  pendingProfile: PendingProfileData | null
+  onSubmit: () => void
 }
 
-function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile }: Props) {
+function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
+  const { getData, setPendingProfileForm, pendingProfileForm } = useContext(ProfileContext)
+
   const [countryData, setCountryData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -111,9 +113,20 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
       })
     }
     getEnum()
+
+    return () => {
+      const data = getValues()
+      if (pendingProfileForm) {
+        setPendingProfileForm({
+          ...pendingProfileForm,
+          generalProfile: { ...pendingProfileForm.generalProfile, ...data }
+        })
+      }
+    }
   }, [])
 
   const {
+    getValues,
     watch,
     control,
     handleSubmit,
@@ -125,17 +138,21 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
     resolver: yupResolver(schema)
   })
   const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'phoneNumbers'
+    name: 'phoneNumbers',
+    control
   })
 
   const submitForm = (data: GeneralProfile) => {
-    onSubmit(data)
+    setPendingProfileForm({
+      ...pendingProfileForm,
+      generalProfile: { ...pendingProfileForm!.generalProfile, ...data }
+    })
+    onSubmit()
   }
   const deleteImage = (id: string) => {
     axiosInterceptorInstance.delete(`/api/Profile/Attachment/Delete/${id}`).then(() => {
       toast.success('suucessfully deleted')
-      onNeedRefresh()
+      getData()
     })
   }
 
@@ -147,6 +164,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
             Your Profile
             {pendingProfile && pendingProfile.approvalStatusDisplayName && (
               <CustomChip
+                sx={{ mx: 2 }}
                 icon={<Icon icon={profileStatusObj[pendingProfile.approvalStatusDisplayName].icon}></Icon>}
                 color={profileStatusObj[pendingProfile.approvalStatusDisplayName].color}
                 label={pendingProfile.approvalStatusDisplayName}
@@ -280,7 +298,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                       )}
                     </FormControl>
                   </Grid>
-                  {watch('countryGuid') == 'f27dc5b6-de42-44cf-8449-69cacb74e612' && (
+                  {watch('countryGuid') == 'ac49eb27-d67a-4e5a-8f20-0be4aebcfef4' && (
                     <Grid item xs={12} md={6}>
                       <FormControl fullWidth sx={{ mb: 4 }}>
                         <Controller
@@ -503,6 +521,9 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                   <Typography color='red'>{errors.phoneNumbers.message || ''}</Typography>
                 )}
               </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: theme => `${theme.spacing(3)} !important` }} />
+              </Grid>
               {pendingProfile != null && (
                 <>
                   <Grid item xs={12} md={4}>
@@ -523,7 +544,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                     )}
                     <FileUplader
                       onUploaded={() => {
-                        onNeedRefresh()
+                        getData()
                       }}
                       title='Profile Picture'
                       id='ProfilePic'
@@ -549,7 +570,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                     )}
                     <FileUplader
                       onUploaded={() => {
-                        onNeedRefresh()
+                        getData()
                       }}
                       title='National Card Picture'
                       id='NationalCard'
@@ -575,7 +596,7 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
                     )}
                     <FileUplader
                       onUploaded={() => {
-                        onNeedRefresh()
+                        getData()
                       }}
                       title='Passport Picture'
                       id='Passport'
@@ -597,4 +618,4 @@ function AccountBaseInfo({ onNeedRefresh, onSubmit, defaultValue, pendingProfile
   )
 }
 
-export default AccountBaseInfo
+export default GeneralProfile

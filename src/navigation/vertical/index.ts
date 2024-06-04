@@ -10,6 +10,7 @@ const navigation = (): VerticalNavItemsType => {
       action: 'read',
       subject: 'verify-email'
     },
+
     {
       title: 'Profile',
       path: '/profile/info',
@@ -17,13 +18,7 @@ const navigation = (): VerticalNavItemsType => {
       action: 'read',
       subject: 'profile-info'
     },
-    {
-      title: 'Manage Profile',
-      path: '/manage/profile/list',
-      icon: 'mdi:user-outline',
-      action: 'read',
-      subject: 'manage-profiles'
-    },
+
     {
       title: 'Home',
       path: '/home',
@@ -49,6 +44,26 @@ const navigation = (): VerticalNavItemsType => {
       subject: 'acl-page',
       title: 'access Manage',
       icon: 'mdi:shield-outline'
+    },
+    {
+      title: 'Manage',
+      icon: 'mdi:account-tie',
+      action: 'read',
+      subject: 'manage-profiles',
+      children: [
+        {
+          title: 'Profile',
+          path: '/manage/profile/list',
+          action: 'read',
+          subject: 'manage-profiles'
+        },
+        {
+          title: 'Product Categories',
+          path: '/manage/product-category/list',
+          action: 'read',
+          subject: 'manage-profiles'
+        }
+      ]
     }
   ]
 }
