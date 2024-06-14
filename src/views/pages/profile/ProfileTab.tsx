@@ -1,5 +1,5 @@
 // ** React Imports
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -22,10 +22,15 @@ const ProfileTab = () => {
   const tabHandleChange = (event: React.SyntheticEvent, newValue: string) => {
     settabBaseInfo(newValue)
   }
+  useEffect(() => {
+    if (loadingForm == false && activeProfileForm != null) {
+      settabBaseInfo('2')
+    }
+  }, [loadingForm])
 
   return (
     <>
-      {loadingForm && <div>Loading</div>}
+      {loadingForm && <div>Loading ...</div>}
       {!loadingForm && (
         <>
           <Box sx={{ width: '100%', typography: 'body1' }}>

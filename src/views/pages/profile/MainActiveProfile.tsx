@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Stepper from '@mui/material/Stepper'
 import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
@@ -26,7 +26,7 @@ import ActiveGeneralProfile from 'src/views/pages/profile/ActiveGeneralProfile'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { ActiveProfileData } from 'src/types/forms/profile'
-import SelectCategories from './SelectCategories'
+import ShowSelectCategories from './ShowSelectCategories'
 
 const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   '&:not(:last-of-type)': {
@@ -66,6 +66,21 @@ const MainActiveProfile = ({ serverData }: Props) => {
     trusteeProfile: serverData ? serverData.trusteeProfile != null : false
   })
   const [activeStep, setActiveStep] = useState<number>(0)
+  useEffect(() => {
+    const temp = state
+
+    for (const prop in temp) {
+      const val: boolean = temp[prop]
+      if (val)
+        setsteps(prevState => [
+          ...prevState,
+          {
+            title: prop,
+            subtitle: prop
+          }
+        ])
+    }
+  }, [])
 
   //Handles
   // Handle Stepper
@@ -88,25 +103,31 @@ const MainActiveProfile = ({ serverData }: Props) => {
       case 1:
         return (
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <SelectCategories roleTitle={steps[1].title} />
+            <ShowSelectCategories key='showCategory1' roleTitle={steps[1].title} />
           </Box>
         )
       case 2:
         return (
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <SelectCategories roleTitle={steps[2].title} />
+            <ShowSelectCategories key='showCategory2' roleTitle={steps[2].title} />
           </Box>
         )
       case 3:
         return (
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <SelectCategories roleTitle={steps[3].title} />
+            <ShowSelectCategories key='showCategory3' roleTitle={steps[3].title} />
           </Box>
         )
       case 4:
         return (
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <SelectCategories roleTitle={steps[4].title} />
+            <ShowSelectCategories key='showCategory4' roleTitle={steps[4].title} />
+          </Box>
+        )
+      case 5:
+        return (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <ShowSelectCategories key='showCategory5' roleTitle={steps[5].title} />
           </Box>
         )
       default:
@@ -134,11 +155,11 @@ const MainActiveProfile = ({ serverData }: Props) => {
         <Button
           variant='contained'
           disabled={stepCondition}
-          color={stepCondition ? 'success' : 'primary'}
+          color='primary'
           {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
           onClick={() => handleNext()}
         >
-          {stepCondition ? 'Send for Evaluation' : 'Next'}
+          Next
         </Button>
       </Box>
     )
@@ -227,12 +248,11 @@ const MainActiveProfile = ({ serverData }: Props) => {
             </Stepper>
           </StepperWrapper>
         </StepperHeaderContainer>
-        <div>
-          <CardContent>
-            {renderContent()}
-            {renderFooter()}
-          </CardContent>
-        </div>
+
+        <CardContent sx={{ width: '100%' }}>
+          {renderContent()}
+          {renderFooter()}
+        </CardContent>
       </Card>
     </>
   )

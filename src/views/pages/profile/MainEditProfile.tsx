@@ -24,13 +24,14 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 // ** Custom Components Imports
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
-import GeneralProfile from 'src/views/pages/profile/GeneralProfile'
+import GeneralProfilePage from 'src/views/pages/profile/GeneralProfilePage'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { PendingProfileData } from 'src/types/forms/profile'
 import SelectCategories from './SelectCategories'
 import { ProfileContext } from 'src/context/ProfileContext'
+import EvaluationPage from './EvaluationPage'
 
 const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   '&:not(:last-of-type)': {
@@ -89,7 +90,7 @@ const MainEditProfile = ({ serverData }: Props) => {
 
   useEffect(() => {
     const temp = state
-    debugger
+
     for (const prop in temp) {
       const val: boolean = temp[prop]
       if (val)
@@ -104,20 +105,27 @@ const MainEditProfile = ({ serverData }: Props) => {
   }, [])
 
   //Handles
-  const handleEvaluate = () => {
-    axiosInterceptorInstance
-      .post(apiUrl.sendForEvaluation, { changeRequestGuid: serverData!.changeRequestGuid })
-      .then(() => {
-        toast.success('Your new profile was successfully sent for evaluation!')
+
+  const submitForms = (data: PendingProfileData | null = null) => {
+    debugger
+    if (data != null) {
+      axiosInterceptorInstance
+        .post(apiUrl.CreateOrEditProfile, {
+          ...pendingProfileForm,
+          generalProfile: { ...pendingProfileForm!.generalProfile, ...data }
+        })
+        .then(() => {
+          toast.success('successfully saved')
+
+          getData()
+        })
+    } else {
+      axiosInterceptorInstance.post(apiUrl.CreateOrEditProfile, { ...pendingProfileForm }).then(() => {
+        toast.success('successfully saved')
+
         getData()
       })
-  }
-  const submitForms = () => {
-    axiosInterceptorInstance.post(apiUrl.CreateOrEditProfile, pendingProfileForm).then(() => {
-      toast.success('successfully saved')
-
-      getData()
-    })
+    }
   }
 
   // Handle Stepper
@@ -130,17 +138,27 @@ const MainEditProfile = ({ serverData }: Props) => {
     }
   }
   const getStepContent = (step: number) => {
+    if (step == 99) {
+      return (
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+          <EvaluationPage />
+        </Box>
+      )
+    } else if (step > steps.length - 1) {
+      step = steps.length - 1
+      setActiveStep(step)
+    }
     switch (step) {
       case 0:
         return (
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <GeneralProfile
+            <GeneralProfilePage
               onNeedRefresh={() => {
                 getData()
               }}
               defaultValue={serverData ? serverData.generalProfile : generalProfileEmpty}
               pendingProfile={serverData}
-              onSubmit={() => submitForms()}
+              onSubmit={data => submitForms(data)}
             />
           </Box>
         )
@@ -169,6 +187,12 @@ const MainEditProfile = ({ serverData }: Props) => {
             <SelectCategories key={'step4'} roleTitle={steps[4].title} />
           </Box>
         )
+      case 5:
+        return (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <SelectCategories key={'step5'} roleTitle={steps[5].title} />
+          </Box>
+        )
       default:
         return null
     }
@@ -192,27 +216,32 @@ const MainEditProfile = ({ serverData }: Props) => {
           Previous
         </Button>
         <div>
-          <Button variant='contained' disabled={serverData == null} color='success' onClick={() => handleEvaluate()}>
-            Send for Evaluation
-          </Button>
-          <Button
-            sx={{ mx: 2 }}
-            variant='outlined'
-            disabled={serverData == null}
-            color='primary'
-            onClick={() => submitForms()}
-          >
-            Save Changes
-          </Button>
-          <Button
-            variant='contained'
-            disabled={stepCondition}
-            color='primary'
-            {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
-            onClick={() => handleNext()}
-          >
-            Next
-          </Button>
+          {activeStep != 0 && activeStep != 99 && (
+            <Button sx={{ mx: 2 }} variant='outlined' color='primary' onClick={() => submitForms()}>
+              Save Changes
+            </Button>
+          )}
+          {stepCondition && (
+            <Button
+              variant='contained'
+              color='primary'
+              {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
+              onClick={() => setActiveStep(99)}
+            >
+              send For Evaluation
+            </Button>
+          )}
+          {!stepCondition && activeStep != 99 && (
+            <Button
+              variant='contained'
+              disabled={stepCondition}
+              color='primary'
+              {...(!stepCondition ? { endIcon: <Icon icon='mdi:arrow-right' /> } : {})}
+              onClick={() => handleNext()}
+            >
+              Next
+            </Button>
+          )}
         </div>
       </Box>
     )
@@ -298,6 +327,21 @@ const MainEditProfile = ({ serverData }: Props) => {
                   </Step>
                 )
               })}
+              <Step
+                key={'evaluate'}
+                onClick={() => setActiveStep(99)}
+                sx={{ '&.Mui-completed + svg': { color: 'primary.main' } }}
+              >
+                <StepLabel StepIconComponent={StepperCustomDot}>
+                  <div className='step-label'>
+                    <Typography className='step-number'>{`0${steps.length + 1}`}</Typography>
+                    <div>
+                      <Typography className='step-title'>Evaluation</Typography>
+                      <Typography className='step-subtitle'>Send For Evaluation</Typography>
+                    </div>
+                  </div>
+                </StepLabel>
+              </Step>
             </Stepper>
           </StepperWrapper>
         </StepperHeaderContainer>

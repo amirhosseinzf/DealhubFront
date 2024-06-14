@@ -38,7 +38,18 @@ const ProfileProvider = ({ children }: Props) => {
       .then(async ({ data }) => {
         setLoadingForm(false)
         setActiveProfileForm(data.activeProfile)
-        setPendingProfileForm(data.pendingProfile)
+        setPendingProfileForm(
+          data.pendingProfile
+            ? data.pendingProfile
+            : {
+                generalProfile: null,
+                buyerProfile: null,
+                expertProfile: null,
+                salesRepProfile: null,
+                supplierProfile: null,
+                trusteeProfile: null
+              }
+        )
       })
       .finally(() => {
         setLoadingForm(false)

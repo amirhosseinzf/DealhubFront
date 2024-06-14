@@ -7,9 +7,10 @@ import { ManageProductCategories } from 'src/types/manageProductCategories'
 
 type Props = {
   roleTitle: string
+  disabled?: boolean
 }
 
-function SelectCategories({ roleTitle }: Props) {
+function SelectCategories({ roleTitle, disabled = false }: Props) {
   const { setPendingProfileForm, pendingProfileForm } = useContext(ProfileContext)
 
   const [productCategory, setProductCategory] = useState([])
@@ -44,6 +45,7 @@ function SelectCategories({ roleTitle }: Props) {
 
     return (
       <Autocomplete
+        disabled={disabled}
         value={currentValue}
         multiple
         onChange={(event, newValue) => {
@@ -60,7 +62,7 @@ function SelectCategories({ roleTitle }: Props) {
             InputProps={{
               ...params.InputProps
             }}
-            placeholder={`select your ${roleTitle}`}
+            placeholder={disabled ? `Your Selected ${roleTitle}` : `select your ${roleTitle}`}
           />
         )}
       ></Autocomplete>
@@ -69,7 +71,7 @@ function SelectCategories({ roleTitle }: Props) {
 
   return (
     <Card>
-      <CardHeader title={`Select Your ${roleTitle} Categories : `} />
+      <CardHeader title={disabled ? `Your Selected ${roleTitle}` : `Select Your ${roleTitle} Categories : `} />
       <CardContent>
         <Grid container>
           <Grid item xs={12}>

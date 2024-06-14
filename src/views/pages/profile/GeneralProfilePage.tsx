@@ -54,7 +54,6 @@ const schema = yup.object({
     .required('Must supply at least one phone number')
     .of(yup.string().required('Phone number is required'))
     .min(1, 'Must supply at least one phone number'),
-  contactEmail: yup.string().email(),
   countryGuid: yup.string().required('Country is a required field'),
   firstName: yup.string().when('entityType', {
     is: (value: number) => value == 2,
@@ -96,10 +95,10 @@ const schema = yup.object({
 type Props = {
   defaultValue: GeneralProfile
   pendingProfile: PendingProfileData | null
-  onSubmit: () => void
+  onSubmit: (data) => void
 }
 
-function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
+function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
   const { getData, setPendingProfileForm, pendingProfileForm } = useContext(ProfileContext)
 
   const [countryData, setCountryData] = useState([])
@@ -114,15 +113,16 @@ function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
     }
     getEnum()
 
-    return () => {
-      const data = getValues()
-      if (pendingProfileForm) {
-        setPendingProfileForm({
-          ...pendingProfileForm,
-          generalProfile: { ...pendingProfileForm.generalProfile, ...data }
-        })
-      }
-    }
+    // return () => {
+
+    //   const data = getValues()
+    //   if (pendingProfileForm) {
+    //     setPendingProfileForm({
+    //       ...pendingProfileForm,
+    //       generalProfile: { ...pendingProfileForm.generalProfile, ...data }
+    //     })
+    //   }
+    // }
   }, [])
 
   const {
@@ -134,7 +134,7 @@ function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
     formState: { errors }
   } = useForm({
     defaultValues: defaultValue,
-    mode: 'onBlur',
+    mode: 'onChange',
     resolver: yupResolver(schema)
   })
   const { fields, append, remove } = useFieldArray({
@@ -142,12 +142,12 @@ function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
     control
   })
 
-  const submitForm = (data: GeneralProfile) => {
-    setPendingProfileForm({
+  const submitForm = async (data: GeneralProfile) => {
+    await setPendingProfileForm({
       ...pendingProfileForm,
       generalProfile: { ...pendingProfileForm!.generalProfile, ...data }
     })
-    onSubmit()
+    onSubmit(data)
   }
   const deleteImage = (id: string) => {
     axiosInterceptorInstance.delete(`/api/Profile/Attachment/Delete/${id}`).then(() => {
@@ -524,7 +524,7 @@ function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
               <Grid item xs={12}>
                 <Divider sx={{ my: theme => `${theme.spacing(3)} !important` }} />
               </Grid>
-              {pendingProfile != null && (
+              {pendingProfile?.generalProfile != null && (
                 <>
                   <Grid item xs={12} md={4}>
                     {pendingProfile && pendingProfile.profilePicUrl && (
@@ -618,4 +618,4 @@ function GeneralProfile({ onSubmit, defaultValue, pendingProfile }: Props) {
   )
 }
 
-export default GeneralProfile
+export default GeneralProfilePage

@@ -7,7 +7,7 @@ export type GeneralProfile = {
   nationalCode: string
   passportNumber: string
   companyNationalId: string
-  phoneNumbers: string[]
+  phoneNumbers?: string[]
   contactEmail?: string
   websiteUrl?: string
   ceoName: string

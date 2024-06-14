@@ -44,6 +44,8 @@ import CustomChip from 'src/@core/components/mui/chip'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Chip } from '@mui/material'
 import { ManageProductCategories } from 'src/types/manageProductCategories'
+import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
+import toast from 'react-hot-toast'
 
 interface InvoiceStatusObj {
   [key: string]: {
@@ -81,7 +83,7 @@ const defaultColumns: GridColDef[] = [
   {
     flex: 0.1,
     headerName: 'Display Order',
-    field: 'Display Order',
+    field: 'displayOrder',
     minWidth: 100
   },
   {
@@ -146,7 +148,6 @@ const ProductCategoryList = () => {
   const [sortValue, setSortValue] = useState('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedItem, SetselectedItem] = useState<any>({})
-  const [rejectionComment, setRejectionComment] = useState('')
 
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
 
@@ -192,13 +193,18 @@ const ProductCategoryList = () => {
     SetselectedItem({})
     setDeleteDialogOpen(false)
   }
-  const handleApproveOrReject = (decision: number) => {
-    const data = {
-      changeRequestGuid: selectedItem.globalId,
-      decision,
-      rejectionComment: rejectionComment
-    }
-    dispatch(approveOrRejectProfile(data)).then(() => {
+  const handleDelete = () => {
+    axiosInterceptorInstance.delete(`/api/ProductCategory/Delete/${selectedItem.globalId}`).then(() => {
+      toast.success('suucessfully deleted')
+      dispatch(
+        fetchData({
+          PageNumber: paginationModel.page,
+          PageSize: paginationModel.pageSize,
+          Sort: sortValue,
+          'Filters.Status': statusValue,
+          'Filters.NameContains': nameContainsValue
+        })
+      )
       handleDeleteDialogClose()
     })
   }
@@ -218,7 +224,7 @@ const ProductCategoryList = () => {
                 size='small'
                 component={Link}
                 sx={{ mr: 0.5 }}
-                href={`/manage/product-category/Edit/${row.globalId}`}
+                href={`/manage/product-category/edit/${row.globalId}`}
               >
                 <Icon icon='mdi:pencil-box-outline' />
               </IconButton>
@@ -274,6 +280,9 @@ const ProductCategoryList = () => {
           </Card>
         </Grid>
         <Grid item xs={12}>
+          <Button sx={{ mb: 2 }} component={Link} variant='contained' href='/manage/product-category/add'>
+            Create
+          </Button>
           <Card>
             <DataGrid
               autoHeight
@@ -296,28 +305,14 @@ const ProductCategoryList = () => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>{'Approve / Reject'}</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>{'Delete'}</DialogTitle>
         <DialogContent>
-          <Typography>Approve Or Reject For User: {selectedItem.username}</Typography>
-          <TextField
-            value={rejectionComment}
-            onChange={event => setRejectionComment(event.target.value)}
-            style={{ marginTop: '10px' }}
-            fullWidth
-            rows={5}
-            multiline
-            label='Description'
-            type='textarea'
-            variant='outlined'
-          />
+          <Typography>Are you sure to delete {selectedItem.name} ?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>close</Button>
-          <Button color='error' variant='outlined' onClick={() => handleApproveOrReject(2)}>
-            Reject
-          </Button>
-          <Button color='success' variant='contained' onClick={() => handleApproveOrReject(1)} autoFocus>
-            Approve
+          <Button color='error' variant='contained' onClick={() => handleDelete()} autoFocus>
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

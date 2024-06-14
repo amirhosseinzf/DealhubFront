@@ -32,7 +32,7 @@ axiosInterceptorInstance.interceptors.response.use(
   },
   error => {
     // Handle response errors here
-    debugger
+
     if (error.response.status === 401 || error.response.status === 419) {
       alert('Your time is up')
       location.reload()

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, forwardRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -9,9 +9,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Tooltip from '@mui/material/Tooltip'
-import { styled } from '@mui/material/styles'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
@@ -30,7 +28,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchData, approveOrRejectProfile } from 'src/store/manageProfile'
+import { fetchData } from 'src/store/manageProfile'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -44,7 +42,6 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material'
 
 interface InvoiceStatusObj {
   [key: string]: {
@@ -141,9 +138,6 @@ const InvoiceList = () => {
   // const [dates, setDates] = useState<Date[]>([])
   const [statusValue, setStatusValue] = useState<string>('')
   const [sortValue, setSortValue] = useState('')
-  const [approveOrRejectDialogOpen, setApproveOrRejectDialogOpen] = useState(false)
-  const [selectedItem, SetselectedItem] = useState<any>({})
-  const [rejectionComment, setRejectionComment] = useState('')
 
   // const [endDateRange, setEndDateRange] = useState<DateType>(null)
 
@@ -193,24 +187,7 @@ const InvoiceList = () => {
   //   setStartDateRange(start)
   //   setEndDateRange(end)
   // }
-  const handleApproveOrRejectDialogOpen = (item: any) => {
-    SetselectedItem(item)
-    setApproveOrRejectDialogOpen(true)
-  }
-  const handleApproveOrRejectDialogClose = () => {
-    SetselectedItem({})
-    setApproveOrRejectDialogOpen(false)
-  }
-  const handleApproveOrReject = (decision: number) => {
-    const data = {
-      changeRequestGuid: selectedItem.globalId,
-      decision,
-      rejectionComment: rejectionComment
-    }
-    dispatch(approveOrRejectProfile(data)).then(() => {
-      handleApproveOrRejectDialogClose()
-    })
-  }
+
   const columns: GridColDef[] = [
     ...defaultColumns,
     {
@@ -220,8 +197,6 @@ const InvoiceList = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }: CellType) => {
-        const { approvalStatusDisplayName } = row
-
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='View'>
@@ -234,13 +209,6 @@ const InvoiceList = () => {
                 <Icon icon='mdi:eye-outline' />
               </IconButton>
             </Tooltip>
-            {approvalStatusDisplayName == 'Pending' && (
-              <Tooltip title='Approve/Reject'>
-                <IconButton size='small' sx={{ mr: 0.5 }} onClick={() => handleApproveOrRejectDialogOpen(row)}>
-                  <Icon icon='mdi:stamper' />
-                </IconButton>
-              </Tooltip>
-            )}
           </Box>
         )
       }
@@ -318,37 +286,6 @@ const InvoiceList = () => {
           </Card>
         </Grid>
       </Grid>
-      <Dialog
-        open={approveOrRejectDialogOpen}
-        onClose={handleApproveOrRejectDialogClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='alert-dialog-title'>{'Approve / Reject'}</DialogTitle>
-        <DialogContent>
-          <Typography>Approve Or Reject For User: {selectedItem.username}</Typography>
-          <TextField
-            value={rejectionComment}
-            onChange={event => setRejectionComment(event.target.value)}
-            style={{ marginTop: '10px' }}
-            fullWidth
-            rows={5}
-            multiline
-            label='Description'
-            type='textarea'
-            variant='outlined'
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleApproveOrRejectDialogClose}>close</Button>
-          <Button color='error' variant='outlined' onClick={() => handleApproveOrReject(2)}>
-            Reject
-          </Button>
-          <Button color='success' variant='contained' onClick={() => handleApproveOrReject(1)} autoFocus>
-            Approve
-          </Button>
-        </DialogActions>
-      </Dialog>
     </DatePickerWrapper>
   )
 }

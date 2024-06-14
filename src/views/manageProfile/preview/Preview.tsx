@@ -8,19 +8,25 @@ import {
   TableRow,
   Divider,
   TableContainer,
-  TableHead,
   TableCell,
   TableCellBaseProps,
-  Button
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField
 } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import { Box, BoxProps, styled } from '@mui/system'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
-import themeConfig from 'src/configs/themeConfig'
 import Icon from 'src/@core/components/icon'
 import { ThemeColor } from 'src/@core/layouts/types'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
+import { approveOrRejectProfile } from 'src/store/manageProfile'
 
 type ServerData = {
   changeRequestGuid: string
@@ -114,10 +120,31 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   }
 }))
 function Preview({ id }: Props) {
-  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
 
+  const router = useRouter()
+  const [approveOrRejectDialogOpen, setApproveOrRejectDialogOpen] = useState(false)
+  const [rejectionComment, setRejectionComment] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [serverData, setServerData] = useState<ServerData | null>(null)
+
+  const handleApproveOrRejectDialogOpen = () => {
+    setApproveOrRejectDialogOpen(true)
+  }
+  const handleApproveOrRejectDialogClose = () => {
+    setApproveOrRejectDialogOpen(false)
+  }
+  const handleApproveOrReject = (decision: number) => {
+    const data = {
+      changeRequestGuid: id,
+      decision,
+      rejectionComment: rejectionComment
+    }
+    dispatch(approveOrRejectProfile(data)).then(() => {
+      handleApproveOrRejectDialogClose()
+      router.back()
+    })
+  }
 
   const getPreviewData = () => {
     axiosInterceptorInstance
@@ -137,9 +164,14 @@ function Preview({ id }: Props) {
       {!isLoading && serverData == null && <div>Data Not Fetch</div>}
       {!isLoading && (
         <div>
-          <Button variant='contained' sx={{ margin: '10px' }} onClick={() => router.back()}>
+          <Button variant='outlined' sx={{ margin: '10px' }} onClick={() => router.back()}>
             Back
           </Button>
+          {serverData!.approvalStatusDisplayName == 'Pending' && (
+            <Button variant='contained' sx={{ margin: '10px' }} onClick={() => handleApproveOrRejectDialogOpen()}>
+              Approve/Reject
+            </Button>
+          )}
           <Card>
             <CardContent>
               <Grid container>
@@ -310,6 +342,37 @@ function Preview({ id }: Props) {
               </Grid>
             </CardContent>
           </Card>
+          <Dialog
+            open={approveOrRejectDialogOpen}
+            onClose={handleApproveOrRejectDialogClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>{'Approve / Reject'}</DialogTitle>
+            <DialogContent>
+              <Typography>Approve Or Reject</Typography>
+              <TextField
+                value={rejectionComment}
+                onChange={event => setRejectionComment(event.target.value)}
+                style={{ marginTop: '10px' }}
+                fullWidth
+                rows={5}
+                multiline
+                label='Description'
+                type='textarea'
+                variant='outlined'
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleApproveOrRejectDialogClose}>close</Button>
+              <Button color='error' variant='outlined' onClick={() => handleApproveOrReject(2)}>
+                Reject
+              </Button>
+              <Button color='success' variant='contained' onClick={() => handleApproveOrReject(1)} autoFocus>
+                Approve
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       )}
     </>
