@@ -6,8 +6,8 @@ import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 import apiUrl from 'src/configs/api'
 
 interface DataParams {
-  'Filters.UserAccountGuid'?: string
-  'Filters.ApprovalStatus'?: string
+  'Filters.TradeEntityGuid'?: string
+  'Filters.ProductCategoryGuid'?: string
   PageNumber?: number
   PageSize?: number
   Sort?: string
@@ -18,9 +18,9 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
-// ** Fetch manageProfiles
-export const fetchData = createAsyncThunk('manageProfile/fetchData', async (params: DataParams) => {
-  const response = await axiosInterceptorInstance.get(apiUrl.getChangesRequest, {
+// ** Fetch manageGrid
+export const fetchData = createAsyncThunk('manageGrid/fetchData', async (params: DataParams) => {
+  const response = await axiosInterceptorInstance.get(apiUrl.getGrid, {
     params: { ...params, IncludeTotalCount: true }
   })
 
@@ -28,28 +28,28 @@ export const fetchData = createAsyncThunk('manageProfile/fetchData', async (para
 })
 
 export const deleteProfile = createAsyncThunk(
-  'manageProfile/deleteData',
+  'manageGrid/deleteData',
   async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axiosInterceptorInstance.delete('/apps/manageProfile/delete', {
+    const response = await axiosInterceptorInstance.delete('/apps/manageGrid/delete', {
       data: id
     })
-    await dispatch(fetchData(getState().manageProfile.params))
+    await dispatch(fetchData(getState().manageGrid.params))
 
     return response.data
   }
 )
 export const approveOrRejectProfile = createAsyncThunk(
-  'manageProfile/approveOrRejectData',
+  'manageGrid/approveOrRejectData',
   async (data: any, { getState, dispatch }: Redux) => {
     const response = await axiosInterceptorInstance.post('/api/Profile/Evaluate', data)
-    await dispatch(fetchData(getState().manageProfile.params))
+    await dispatch(fetchData(getState().manageGrid.params))
 
     return response.data
   }
 )
 
-export const manageProfileSlice = createSlice({
-  name: 'manageProfile',
+export const manageGridSlice = createSlice({
+  name: 'manageGrid',
   initialState: {
     data: [],
     totalCount: 1,
@@ -67,4 +67,4 @@ export const manageProfileSlice = createSlice({
   }
 })
 
-export default manageProfileSlice.reducer
+export default manageGridSlice.reducer

@@ -21,7 +21,7 @@ interface Redux {
 // ** Fetch manageProductCategories
 export const fetchData = createAsyncThunk('manageProductCategories/fetchData', async (params: DataParams) => {
   const response = await axiosInterceptorInstance.get(apiUrl.getProductCategory, {
-    params
+    params: { ...params, IncludeTotalCount: true }
   })
 
   return response.data

@@ -152,7 +152,7 @@ const InvoiceList = () => {
   useEffect(() => {
     dispatch(
       fetchData({
-        PageNumber: paginationModel.page,
+        PageNumber: paginationModel.page + 1,
         PageSize: paginationModel.pageSize,
         Sort: sortValue,
         'Filters.ApprovalStatus': statusValue,
@@ -274,6 +274,8 @@ const InvoiceList = () => {
             <DataGrid
               autoHeight
               pagination
+              paginationMode='server'
+              rowCount={store.totalCount}
               rows={store.data}
               columns={columns}
               getRowId={row => row.globalId}

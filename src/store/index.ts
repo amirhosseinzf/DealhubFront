@@ -5,12 +5,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import invoice from 'src/store/invoice'
 import manageProfile from 'src/store/manageProfile'
 import manageProductCategories from 'src/store/manageProductCategories'
+import manageGrid from 'src/store/manageGrade'
 
 export const store = configureStore({
   reducer: {
     invoice,
     manageProfile,
-    manageProductCategories
+    manageProductCategories,
+    manageGrid
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

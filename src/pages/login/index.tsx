@@ -94,7 +94,7 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 
 // .email('ایمیل صحیح نمیباشد')
 const schema = yup.object().shape({
-  email: yup.string().required(),
+  email: yup.string().required('email/username is required'),
   password: yup.string().min(3).required()
 })
 

@@ -150,6 +150,7 @@ const ProductCategoryList = () => {
   const [selectedItem, SetselectedItem] = useState<any>({})
 
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  console.log(paginationModel)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -158,7 +159,7 @@ const ProductCategoryList = () => {
   useEffect(() => {
     dispatch(
       fetchData({
-        PageNumber: paginationModel.page,
+        PageNumber: paginationModel.page + 1,
         PageSize: paginationModel.pageSize,
         Sort: sortValue,
         'Filters.Status': statusValue,
@@ -287,6 +288,8 @@ const ProductCategoryList = () => {
             <DataGrid
               autoHeight
               pagination
+              paginationMode='server'
+              rowCount={store.totalCount}
               rows={store.data}
               columns={columns}
               getRowId={row => row.globalId}

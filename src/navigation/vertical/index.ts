@@ -46,6 +46,13 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:shield-outline'
     },
     {
+      title: 'Grade',
+      path: '/manage/grade/list',
+      action: 'read',
+      icon: 'mdi:star-outline',
+      subject: 'grade-controller'
+    },
+    {
       title: 'Manage',
       icon: 'mdi:account-tie',
       action: 'read',

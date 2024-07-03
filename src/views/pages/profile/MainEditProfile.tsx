@@ -107,7 +107,6 @@ const MainEditProfile = ({ serverData }: Props) => {
   //Handles
 
   const submitForms = (data: PendingProfileData | null = null) => {
-    debugger
     if (data != null) {
       axiosInterceptorInstance
         .post(apiUrl.CreateOrEditProfile, {

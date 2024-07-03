@@ -262,20 +262,22 @@ function Preview({ id }: Props) {
               </Typography>
               <TableContainer>
                 <Table>
-                  <TableBody>
-                    {Object.keys(serverData?.generalProfile).map(key => (
-                      <>
-                        <TableRow>
-                          <MUITableCell>
-                            <Typography variant='body1'>{key}</Typography>
-                          </MUITableCell>
-                          <MUITableCell>
-                            <Typography variant='body1'>{serverData?.generalProfile[key]}</Typography>
-                          </MUITableCell>
-                        </TableRow>
-                      </>
-                    ))}
-                  </TableBody>
+                  {serverData?.generalProfile && (
+                    <TableBody>
+                      {Object.keys(serverData?.generalProfile).map(key => (
+                        <>
+                          <TableRow>
+                            <MUITableCell>
+                              <Typography variant='body1'>{key}</Typography>
+                            </MUITableCell>
+                            <MUITableCell>
+                              <Typography variant='body1'>{serverData?.generalProfile[key]}</Typography>
+                            </MUITableCell>
+                          </TableRow>
+                        </>
+                      ))}
+                    </TableBody>
+                  )}
                 </Table>
               </TableContainer>
             </CardContent>
