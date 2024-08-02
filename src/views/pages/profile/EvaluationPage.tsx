@@ -20,12 +20,19 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/system'
 import SelectCategories from './SelectCategories'
+import { PendingProfileData } from 'src/types/forms/profile'
 
 const EvaluationPage = () => {
   const { getData, pendingProfileForm } = useContext(ProfileContext)
 
   console.log(pendingProfileForm)
-  const categories = ['expertProfile', 'buyerProfile', 'salesRepProfile', 'supplierProfile', 'trusteeProfile']
+  const categories: (keyof PendingProfileData)[] = [
+    'expertProfile',
+    'buyerProfile',
+    'salesRepProfile',
+    'supplierProfile',
+    'trusteeProfile'
+  ]
   const handleEvaluate = () => {
     axiosInterceptorInstance
       .post(apiUrl.sendForEvaluation, { changeRequestGuid: pendingProfileForm!.changeRequestGuid })
@@ -48,7 +55,7 @@ const EvaluationPage = () => {
           {categories.map(el => (
             <>
               {pendingProfileForm[el] != null && (
-                <CardContent>
+                <CardContent key={el}>
                   <SelectCategories roleTitle={el} disabled={true}></SelectCategories>
                 </CardContent>
               )}

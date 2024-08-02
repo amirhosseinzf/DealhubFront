@@ -71,6 +71,11 @@ const defaultColumns: GridColDef[] = [
   },
   {
     flex: 0.1,
+    headerName: 'Specialization',
+    field: 'specializationDisplayName'
+  },
+  {
+    flex: 0.1,
     headerName: 'Product category',
     field: 'productCategoryName',
     minWidth: 100

@@ -20,7 +20,8 @@ import {
   IconButton,
   Typography,
   CircularProgress,
-  Divider
+  Divider,
+  Popover
 } from '@mui/material'
 import apiUrl from 'src/configs/api'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
@@ -95,7 +96,7 @@ const schema = yup.object({
 type Props = {
   defaultValue: GeneralProfile
   pendingProfile: PendingProfileData | null
-  onSubmit: (data) => void
+  onSubmit: (data: any) => void
 }
 
 function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
@@ -126,7 +127,6 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
   }, [])
 
   const {
-    getValues,
     watch,
     control,
     handleSubmit,
@@ -156,6 +156,21 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
     })
   }
 
+  //for popover
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+
+  //end popover
+
   return (
     <Card>
       <CardHeader
@@ -163,12 +178,50 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
           <>
             Your Profile
             {pendingProfile && pendingProfile.approvalStatusDisplayName && (
-              <CustomChip
-                sx={{ mx: 2 }}
-                icon={<Icon icon={profileStatusObj[pendingProfile.approvalStatusDisplayName].icon}></Icon>}
-                color={profileStatusObj[pendingProfile.approvalStatusDisplayName].color}
-                label={pendingProfile.approvalStatusDisplayName}
-              />
+              <span>
+                <CustomChip
+                  onMouseEnter={handlePopoverOpen}
+                  onMouseLeave={handlePopoverClose}
+                  sx={{ mx: 2 }}
+                  icon={<Icon icon={profileStatusObj[pendingProfile.approvalStatusDisplayName].icon}></Icon>}
+                  color={profileStatusObj[pendingProfile.approvalStatusDisplayName].color}
+                  label={pendingProfile.approvalStatusDisplayName}
+                />
+                <Popover
+                  id='mouse-over-popover'
+                  sx={{
+                    p: 2,
+                    pointerEvents: 'none'
+                  }}
+                  open={open}
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left'
+                  }}
+                  onClose={handlePopoverClose}
+                  disableRestoreFocus
+                >
+                  <Typography sx={{ p: 1 }}>
+                    <strong>Send Date : </strong>
+                    {new Date(pendingProfile?.sendDate || '').toLocaleString()}
+                  </Typography>
+                  <Typography sx={{ p: 1 }}>
+                    <strong>Create Date : </strong>
+                    {new Date(pendingProfile?.createDate || '').toLocaleString()}
+                  </Typography>
+                  {pendingProfile.rejectionReason && (
+                    <Typography sx={{ p: 1 }}>
+                      <strong>Rejection Reason : </strong>
+                      {pendingProfile?.rejectionReason}
+                    </Typography>
+                  )}
+                </Popover>
+              </span>
             )}
           </>
         }
@@ -536,7 +589,7 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                           src={pendingProfile.profilePicUrl.downloadAbsoluteUrl}
                         />
                         <Icon
-                          onClick={() => deleteImage(pendingProfile.profilePicUrl.attachmentGuid)}
+                          onClick={() => deleteImage(pendingProfile.profilePicUrl!.attachmentGuid)}
                           icon='mdi:trash'
                           color='red'
                         />
@@ -549,7 +602,10 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                       title='Profile Picture'
                       id='ProfilePic'
                       url='/api/Profile/Attachment/Add'
-                      params={{ flag: 'ProfilePic', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                      params={{
+                        flag: 'ProfilePic',
+                        referenceEntityGuid: pendingProfile.changeRequestGuid ? pendingProfile.changeRequestGuid : ''
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -562,7 +618,7 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                           src={pendingProfile.nationalCardScanUrl.downloadAbsoluteUrl}
                         />
                         <Icon
-                          onClick={() => deleteImage(pendingProfile.nationalCardScanUrl.attachmentGuid)}
+                          onClick={() => deleteImage(pendingProfile.nationalCardScanUrl!.attachmentGuid)}
                           icon='mdi:trash'
                           color='red'
                         />
@@ -575,7 +631,10 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                       title='National Card Picture'
                       id='NationalCard'
                       url='/api/Profile/Attachment/Add'
-                      params={{ flag: 'NationalCard', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                      params={{
+                        flag: 'NationalCard',
+                        referenceEntityGuid: pendingProfile.changeRequestGuid ? pendingProfile.changeRequestGuid : ''
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -588,7 +647,7 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                           src={pendingProfile.passportScanUrl.downloadAbsoluteUrl}
                         />
                         <Icon
-                          onClick={() => deleteImage(pendingProfile.passportScanUrl.attachmentGuid)}
+                          onClick={() => deleteImage(pendingProfile.passportScanUrl!.attachmentGuid)}
                           icon='mdi:trash'
                           color='red'
                         />
@@ -601,7 +660,10 @@ function GeneralProfilePage({ onSubmit, defaultValue, pendingProfile }: Props) {
                       title='Passport Picture'
                       id='Passport'
                       url='/api/Profile/Attachment/Add'
-                      params={{ flag: 'Passport', referenceEntityGuid: pendingProfile.changeRequestGuid }}
+                      params={{
+                        flag: 'Passport',
+                        referenceEntityGuid: pendingProfile.changeRequestGuid ? pendingProfile.changeRequestGuid : ''
+                      }}
                     />
                   </Grid>
                 </>

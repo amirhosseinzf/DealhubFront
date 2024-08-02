@@ -126,6 +126,7 @@ export type PendingProfileData = {
   userAccountGuid?: string
   approvalStatus?: 1 | 2 | 3 | 4
   approvalStatusDisplayName?: string
+  rejectionReason?: string
   createDate?: string
   sendDate?: string
   evaluationDate?: string

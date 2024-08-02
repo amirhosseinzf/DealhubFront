@@ -182,7 +182,7 @@ const LoginPage = () => {
               </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>{`Wellcome to  ${themeConfig.templateName}  !`}</TypographyStyled>
+              <TypographyStyled variant='h5'>{`Welcome to  ${themeConfig.templateName}  !`}</TypographyStyled>
               <Typography variant='body2'>To login, please enter your username or email and password</Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>

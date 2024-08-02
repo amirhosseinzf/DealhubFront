@@ -15,10 +15,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField
+  TextField,
+  Radio
 } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
-import { Box, BoxProps, styled } from '@mui/system'
+import { Box, styled } from '@mui/system'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
@@ -27,6 +28,8 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
 import { approveOrRejectProfile } from 'src/store/manageProfile'
+import toast from 'react-hot-toast'
+import ShowCategories from './showCategories'
 
 type ServerData = {
   changeRequestGuid: string
@@ -111,18 +114,21 @@ const MUITableCell = styled(TableCell)<TableCellBaseProps>(({ theme }) => ({
   borderBottom: 0,
   padding: `${theme.spacing(1, 0)} !important`
 }))
-const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  '&:not(:last-of-type)': {
-    marginBottom: theme.spacing(2)
-  }
-}))
+
 function Preview({ id }: Props) {
+  const categories: (keyof ServerData)[] = [
+    'expertProfile',
+    'buyerProfile',
+    'salesRepProfile',
+    'supplierProfile',
+    'trusteeProfile'
+  ]
+
   const dispatch = useDispatch<AppDispatch>()
 
   const router = useRouter()
+
+  const [selectedValue, setSelectedValue] = React.useState('approve')
   const [approveOrRejectDialogOpen, setApproveOrRejectDialogOpen] = useState(false)
   const [rejectionComment, setRejectionComment] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -135,12 +141,18 @@ function Preview({ id }: Props) {
     setApproveOrRejectDialogOpen(false)
   }
   const handleApproveOrReject = (decision: number) => {
+    if (decision == 2 && rejectionComment == '') {
+      toast.error('description is required')
+
+      return
+    }
     const data = {
       changeRequestGuid: id,
       decision,
       rejectionComment: rejectionComment
     }
     dispatch(approveOrRejectProfile(data)).then(() => {
+      toast.success('suucessfully done')
       handleApproveOrRejectDialogClose()
       router.back()
     })
@@ -156,7 +168,12 @@ function Preview({ id }: Props) {
   }
   useEffect(() => {
     getPreviewData()
-  }, [])
+  })
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedValue(event.target.value)
+    setRejectionComment('')
+  }
 
   return (
     <>
@@ -287,6 +304,17 @@ function Preview({ id }: Props) {
             </CardContent>
 
             <Divider sx={{ mt: theme => `${theme.spacing(4.5)} !important`, mb: '0 !important' }} />
+            {categories.map(el => (
+              <>
+                {serverData && serverData[el] != null && (
+                  <CardContent>
+                    <ShowCategories serverData={serverData} roleTitle={el} disabled={true}></ShowCategories>
+                  </CardContent>
+                )}
+              </>
+            ))}
+
+            <Divider sx={{ mt: theme => `${theme.spacing(4.5)} !important`, mb: '0 !important' }} />
 
             <CardContent>
               <Typography variant='h6' sx={{ color: 'text.primary' }}>
@@ -352,27 +380,52 @@ function Preview({ id }: Props) {
           >
             <DialogTitle id='alert-dialog-title'>{'Approve / Reject'}</DialogTitle>
             <DialogContent>
-              <Typography>Approve Or Reject</Typography>
-              <TextField
-                value={rejectionComment}
-                onChange={event => setRejectionComment(event.target.value)}
-                style={{ marginTop: '10px' }}
-                fullWidth
-                rows={5}
-                multiline
-                label='Description'
-                type='textarea'
-                variant='outlined'
-              />
+              <Typography>Approve Or Reject ?</Typography>
+              <div>
+                <label>approve</label>
+                <Radio
+                  checked={selectedValue === 'approve'}
+                  onChange={handleChange}
+                  value='approve'
+                  name='radio-buttons'
+                  inputProps={{ 'aria-label': 'Approve' }}
+                />
+                <label>reject</label>
+                <Radio
+                  checked={selectedValue === 'reject'}
+                  onChange={handleChange}
+                  value='reject'
+                  name='radio-buttons'
+                  inputProps={{ 'aria-label': 'Reject' }}
+                />
+              </div>
+              {selectedValue == 'reject' && (
+                <TextField
+                  error={rejectionComment == ''}
+                  value={rejectionComment}
+                  onChange={event => setRejectionComment(event.target.value)}
+                  style={{ marginTop: '10px' }}
+                  fullWidth
+                  rows={5}
+                  multiline
+                  label='Description'
+                  type='textarea'
+                  variant='outlined'
+                />
+              )}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleApproveOrRejectDialogClose}>close</Button>
-              <Button color='error' variant='outlined' onClick={() => handleApproveOrReject(2)}>
-                Reject
-              </Button>
-              <Button color='success' variant='contained' onClick={() => handleApproveOrReject(1)} autoFocus>
-                Approve
-              </Button>
+              {selectedValue == 'reject' && (
+                <Button color='error' variant='outlined' onClick={() => handleApproveOrReject(2)}>
+                  Reject
+                </Button>
+              )}
+              {selectedValue == 'approve' && (
+                <Button color='success' variant='contained' onClick={() => handleApproveOrReject(1)} autoFocus>
+                  Approve
+                </Button>
+              )}
             </DialogActions>
           </Dialog>
         </div>

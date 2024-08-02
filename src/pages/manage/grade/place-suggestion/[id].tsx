@@ -50,7 +50,7 @@ const ChangeGrid = () => {
     setCurrentGrade(serverData.data)
   }
   useEffect(() => {
-    fetchData()
+    if (id) fetchData()
   }, [id])
 
   const {
@@ -81,7 +81,7 @@ const ChangeGrid = () => {
         back
       </Button>
       <Card>
-        <CardHeader title=' Change Grade' />
+        <CardHeader title=' Suggestion Grade' />
         {currentGrade != null && (
           <CardContent>
             <Typography>

@@ -1,25 +1,82 @@
 import { Autocomplete, Card, CardContent, CardHeader, Grid, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axiosInterceptorInstance from 'src/@core/utils/axiosInterceptorInstance'
 import apiUrl from 'src/configs/api'
-import { ProfileContext } from 'src/context/ProfileContext'
 import { ManageProductCategories } from 'src/types/manageProductCategories'
 
+type ServerData = {
+  changeRequestGuid: string
+  userAccountGuid: string
+  approvalStatus: 0
+  approvalStatusDisplayName: string
+  createDate: string
+  sendDate: string
+  evaluationDate: string
+  generalProfile: {
+    entityType: 1
+    firstName: string
+    lastName: string
+    companyName: string
+    countryGuid: string
+    nationalCode: string
+    passportNumber: string
+    companyNationalId: string
+    phoneNumbers: string[]
+    contactEmail: string
+    websiteUrl: string
+    ceoName: string
+    address: string
+  }
+  buyerProfile: {
+    productCategories: [string]
+  }
+  expertProfile: {
+    productCategories: [string]
+  }
+  salesRepProfile: {
+    productCategories: [string]
+  }
+  supplierProfile: {
+    productCategories: [string]
+  }
+  trusteeProfile: {
+    productCategories: [string]
+  }
+  profilePicUrl: {
+    attachmentGuid: string
+    downloadRelativeUrl: string
+    downloadAbsoluteUrl: string
+  }
+  nationalCardScanUrl: {
+    attachmentGuid: string
+    downloadRelativeUrl: string
+    downloadAbsoluteUrl: string
+  }
+  passportScanUrl: {
+    attachmentGuid: string
+    downloadRelativeUrl: string
+    downloadAbsoluteUrl: string
+  }
+  registrationCertificateScanUrl: {
+    attachmentGuid: string
+    downloadRelativeUrl: string
+    downloadAbsoluteUrl: string
+  }
+  username: string
+  email: string
+  entityDisplayName: string
+}
 type Props = {
+  serverData: ServerData
   roleTitle: string
   disabled?: boolean
 }
 
-function SelectCategories({ roleTitle, disabled = false }: Props) {
-  const { setPendingProfileForm, pendingProfileForm } = useContext(ProfileContext)
+function ShowCategories({ serverData, roleTitle, disabled = false }: Props) {
   debugger
   const [productCategory, setProductCategory] = useState([])
   const [selectedValues, setSelectedValues] = useState(
-    pendingProfileForm
-      ? pendingProfileForm[roleTitle] != null
-        ? pendingProfileForm[roleTitle].productCategories
-        : []
-      : []
+    serverData ? (serverData[roleTitle] != null ? serverData[roleTitle].productCategories : []) : []
   )
   useEffect(() => {
     async function getEnum() {
@@ -30,14 +87,6 @@ function SelectCategories({ roleTitle, disabled = false }: Props) {
     getEnum()
   }, [])
 
-  const handleSaveProductCategories = (value: string[]) => {
-    if (pendingProfileForm) {
-      setPendingProfileForm({
-        ...pendingProfileForm,
-        [roleTitle]: { productCategories: [...value] }
-      })
-    }
-  }
   const renderAutocomplete = () => {
     debugger
     const currentValue: string[] = productCategory.filter((obj: ManageProductCategories) =>
@@ -51,7 +100,6 @@ function SelectCategories({ roleTitle, disabled = false }: Props) {
         multiple
         onChange={(event, newValue) => {
           setSelectedValues(newValue.map(val => val.globalId))
-          handleSaveProductCategories(newValue.map(val => val.globalId))
         }}
         options={productCategory}
         getOptionLabel={(option: any) => option.name}
@@ -72,7 +120,7 @@ function SelectCategories({ roleTitle, disabled = false }: Props) {
 
   return (
     <Card>
-      <CardHeader title={disabled ? `Your Selected ${roleTitle}` : `Select Your ${roleTitle} Categories : `} />
+      <CardHeader title={`Selected ${roleTitle}`} />
       <CardContent>
         <Grid container>
           <Grid item xs={12}>
@@ -84,4 +132,4 @@ function SelectCategories({ roleTitle, disabled = false }: Props) {
   )
 }
 
-export default SelectCategories
+export default ShowCategories
